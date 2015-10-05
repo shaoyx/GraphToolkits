@@ -24,9 +24,7 @@ implements GenericGraphTool{
 	
 	private HashMap<Integer, Integer> degrees;
 //	private String graphFilePath;
-	
-	
-	public void loadDegree(String graphFilePath){
+    public void loadDegree(String graphFilePath){
 		try {
 			FileInputStream fin = new FileInputStream(graphFilePath);
 			BufferedReader fbr = new BufferedReader(new InputStreamReader(fin));
@@ -42,7 +40,7 @@ implements GenericGraphTool{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void saveDegreeInfo(String graphFilePath, String savePath){
 		try {
 			FileInputStream fin = new FileInputStream(graphFilePath);
