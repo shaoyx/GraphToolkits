@@ -15,12 +15,14 @@ public class GraphTools {
 
 	private static Options OPTIONS;
 	  static {
-		    OPTIONS = new Options();
-		    OPTIONS.addOption("h", "help", false, "Help");
-		    OPTIONS.addOption("lt", "listTools", false, "List supported tools");
-		    OPTIONS.addOption("tc", "toolClass", true, "Specifiy the tool class");
-		    OPTIONS.addOption("i", "input", true, "Path of the input graph");
-		    
+		  OPTIONS = new Options();
+		  OPTIONS.addOption("h", "help", false, "Help");
+		  OPTIONS.addOption("lt", "listTools", false, "List supported tools");
+		  OPTIONS.addOption("tc", "toolClass", true, "Specify the tool class");
+		  OPTIONS.addOption("i", "input", true, "Path of the input graph");
+
+		  OPTIONS.addOption("th", "threshold", true, "Threshold for edge weight");
+
 		  }
 	
 
