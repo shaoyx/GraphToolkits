@@ -68,7 +68,7 @@ public class Graph {
 			while((line = fbr.readLine()) != null){
 				if(line.startsWith("#")) continue;
 				String [] values = SEPERATOR.split(line);
-				if(values.length != 2){
+				if(values.length < 2){
 					System.out.println("Edge Format Required. Error Line: "+line+". parsed value size = "+values.length);
 					continue;
 				}
