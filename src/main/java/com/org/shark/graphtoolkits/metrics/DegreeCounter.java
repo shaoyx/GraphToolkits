@@ -96,9 +96,6 @@ implements GenericGraphTool{
 
 	@Override
 	public boolean verifyParameters(CommandLine cmd) {
-		if(!cmd.hasOption("dp") || !cmd.hasOption("sp")){
-			return false;
-		}
-		return true;
+		return (cmd.hasOption("dp") && cmd.hasOption("sp"));
 	}
 }

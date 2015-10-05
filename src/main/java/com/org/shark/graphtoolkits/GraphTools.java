@@ -25,7 +25,7 @@ public class GraphTools {
 	
 
 	private static void run(CommandLine cmd) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-		if(cmd.hasOption("tc") == false || cmd.hasOption("i") == false){
+		if(!cmd.hasOption("tc") || !cmd.hasOption("i")){
 			printHelp();
 			return;
 		}
@@ -33,7 +33,7 @@ public class GraphTools {
 		String className = cmd.getOptionValue("tc");
 		GenericGraphTool graphTool = (GenericGraphTool) Class.forName(className).newInstance();
 		
-		if(graphTool.verifyParameters(cmd) == false){
+		if(!graphTool.verifyParameters(cmd)){
 			printHelp();
 			return;
 		}
