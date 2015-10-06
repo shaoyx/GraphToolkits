@@ -1,4 +1,4 @@
-package com.org.shark.graphtoolkits.utils;
+package com.org.shark.graphtoolkits.graph;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -13,14 +13,14 @@ import java.util.regex.Pattern;
 public class Graph {
 	protected static final Pattern SEPERATOR =  Pattern.compile("[\t ]");
 
-	private Set<Integer> vertexSet;
+	private HashMap<Integer, Vertex> vertexSet;
 	private HashMap<Integer, Integer> degreeList;
 	private HashMap<Integer, ArrayList<Edge>> edgeList;
 	private int edgeSize;
 	private int vertexSize;
 	
 	public Graph(String graphFilePath){
-		vertexSet = new HashSet<Integer>();
+		vertexSet = new HashMap<Integer, Vertex>();
 		degreeList = new HashMap<Integer,Integer>();
 		edgeList = new HashMap<Integer, ArrayList<Edge>>();
 		edgeSize = 0;
@@ -29,7 +29,7 @@ public class Graph {
 	}
 	
 	public Graph(String graphFilePath, boolean isEdge){
-		vertexSet = new HashSet<Integer>();
+		vertexSet = new HashMap<Integer, Vertex>();
 		degreeList = new HashMap<Integer,Integer>();
 		edgeList = new HashMap<Integer, ArrayList<Edge>>();
 		edgeSize = 0;
@@ -44,7 +44,7 @@ public class Graph {
 		return degreeList.get(vid);
 	}
 	
-	public Set<Integer> getVertexSet(){
+	public HashMap<Integer, Vertex> getVertexSet(){
 		return vertexSet;
 	}
 	
@@ -65,25 +65,35 @@ public class Graph {
 			FileInputStream fin = new FileInputStream(graphFilePath);
 			BufferedReader fbr = new BufferedReader(new InputStreamReader(fin));
 			String line;
+            int lineNum = 0;
 			while((line = fbr.readLine()) != null){
+                lineNum++;
 				if(line.startsWith("#")) continue;
 				String [] values = SEPERATOR.split(line);
-				if(values.length < 2){
-					System.out.println("Edge Format Required. Error Line: "+line+". parsed value size = "+values.length);
-					continue;
-				}
+				if(values.length < 3) {
+                    System.out.println("Edge Format Required. Error Line: " + line + ". parsed value size = " + values.length);
+                    continue;
+                }
+
+                for(int i = 0; i < 3; i++) {
+                    if(values[i] == null || values[i].length() == 0) {
+                       System.out.println("Error line " + lineNum + ": " + line);
+                    }
+                }
 
 				int sv = Integer.valueOf(values[0]);
 				int ev = Integer.valueOf(values[1]);
 				double ew = Double.valueOf(values[2]);
 
-				if(vertexSet.add(sv)){
+				if(!vertexSet.containsKey(sv)){
 					vertexSize++;
+					vertexSet.put(sv, new Vertex(sv, 0));
 					degreeList.put(sv, 0);
 					edgeList.put(sv, new ArrayList<Edge>());
 				}
-				if(vertexSet.add(ev)){
+				if(!vertexSet.containsKey(ev)){
 					vertexSize++;
+                    vertexSet.put(ev, new Vertex(ev, 0));
 					degreeList.put(ev, 0);
 					edgeList.put(ev, new ArrayList<Edge>());
 				}
@@ -95,6 +105,8 @@ public class Graph {
 				}
 
 				edgeList.get(sv).add(new Edge(ev, ew));
+                Vertex vertex= vertexSet.get(sv);
+                vertex.setWeight(vertex.getWeight() + ew);
 				edgeSize ++;
 			}
 			int degreeSum = 0;
@@ -125,7 +137,7 @@ public class Graph {
 				for(int i = 1; i < values.length; ++i){
 					al.add(new Edge(Integer.valueOf(values[i]), 1.0));
 				}
-				vertexSet.add(vid);
+				vertexSet.put(vid, new Vertex(vid, 0));
 				degreeList.put(vid, values.length - 1);
 				edgeList.put(vid, al);
 				vertexSize++;

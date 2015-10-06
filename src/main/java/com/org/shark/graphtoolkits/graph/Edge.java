@@ -1,4 +1,4 @@
-package com.org.shark.graphtoolkits.utils;
+package com.org.shark.graphtoolkits.graph;
 
 /**
  * Created by yxshao on 10/5/15.
