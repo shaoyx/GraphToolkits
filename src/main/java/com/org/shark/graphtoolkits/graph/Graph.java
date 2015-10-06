@@ -112,7 +112,7 @@ public class Graph {
 				degreeSum += degreeList.get(vid);
 			}
 			System.out.println("Vertex="+vertexSize+" Edge="+edgeSize +" degreeSum="+degreeSum);
-            saveGraph();
+//            saveGraph();
 			fbr.close();
 		} catch (IOException e) {
 			e.printStackTrace();

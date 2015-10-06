@@ -8,6 +8,9 @@ import org.apache.commons.cli.CommandLine;
 
 import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.*;
 
 /**
@@ -51,10 +54,12 @@ public class ComponentStatistics implements GenericGraphTool {
             if(visited.contains(cur)) {
                continue;
             }
-            int ccSize = searchSingleComponent(cur, visited, vertices);
+            ArrayList<Integer> cc = new ArrayList<Integer>();
+            int ccSize = searchSingleComponent(cur, visited, vertices, cc);
             if(ccSize > 1) {
                 curCCId++;
                 System.out.println("CurCCId=" + curCCId + ": size=" + ccSize);
+                saveComponent(curCCId, cc);
             }
             else {
                singlePoint++;
@@ -72,11 +77,12 @@ public class ComponentStatistics implements GenericGraphTool {
      * @param visited
      * @return
      */
-    private int searchSingleComponent(int startId, Set<Integer> visited, HashMap<Integer, Vertex> vertexSet) {
+    private int searchSingleComponent(int startId, Set<Integer> visited, HashMap<Integer, Vertex> vertexSet, ArrayList<Integer> cc) {
         Queue<Integer> queue = new LinkedList<Integer>();
         int size = 1;
         queue.add(startId);
         visited.add(startId);
+        cc.add(startId);
         if(vertexSet.get(startId).getWeight() < this.threshold + 1e-6) {
             return size;
         }
@@ -95,9 +101,27 @@ public class ComponentStatistics implements GenericGraphTool {
                     continue;
                 visited.add(e.getId());
                 queue.add(e.getId());
+                cc.add(e.getId());
                 size++;
             }
         }
         return size;
+    }
+
+    private void saveComponent(Integer ccId, ArrayList<Integer> cc) {
+        try{
+            FileOutputStream fout = new FileOutputStream("foundCC/bfs_ccId_"+ccId+"_size_"+cc.size());
+            BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
+            for(int vid : cc) {
+                StringBuffer sb = new StringBuffer();
+                sb.append(vid);
+                sb.append("\n");
+                fwr.write(sb.toString());
+            }
+            fwr.flush();
+            fwr.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
