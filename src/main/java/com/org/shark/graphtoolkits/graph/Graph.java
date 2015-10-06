@@ -112,7 +112,7 @@ public class Graph {
 				degreeSum += degreeList.get(vid);
 			}
 			System.out.println("Vertex="+vertexSize+" Edge="+edgeSize +" degreeSum="+degreeSum);
-//            saveGraph();
+            saveGraph();
 			fbr.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -130,26 +130,39 @@ public class Graph {
                StringBuffer sb = new StringBuffer();
                sb.append(v.getVid());
                sb.append(" ");
-               sb.append(this.degreeList.get(v.getVid()));
-               sb.append(" ");
+//               sb.append(this.degreeList.get(v.getVid()));
+//               sb.append(" ");
                sb.append(v.getWeight());
-               sb.append("\n");
+//               sb.append(" ");
+
+			   ArrayList<Edge> nbrs = edgeList.get(vid);
+			   for(Edge edge : nbrs) {
+//				   StringBuffer sb = new StringBuffer();
+//				   sb.append(vid);
+				   sb.append(" ");
+				   sb.append(edge.getId());
+//				   sb.append(" ");
+				   sb.append(edge.getWeight());
+//				   sb.append("\n");
+			   }
+			   sb.append("\n");
+
                fwr.write(sb.toString());
            }
-           fwr.write("Edge List\n");
-           for(int vid : edgeList.keySet()) {
-               ArrayList<Edge> nbrs = edgeList.get(vid);
-               for(Edge edge : nbrs) {
-                   StringBuffer sb = new StringBuffer();
-                   sb.append(vid);
-                   sb.append(" ");
-                   sb.append(edge.getId());
-                   sb.append(" ");
-                   sb.append(edge.getWeight());
-                   sb.append("\n");
-                   fwr.write(sb.toString());
-               }
-           }
+//           fwr.write("Edge List\n");
+//           for(int vid : edgeList.keySet()) {
+//               ArrayList<Edge> nbrs = edgeList.get(vid);
+//               for(Edge edge : nbrs) {
+//                   StringBuffer sb = new StringBuffer();
+//                   sb.append(vid);
+//                   sb.append(" ");
+//                   sb.append(edge.getId());
+//                   sb.append(" ");
+//                   sb.append(edge.getWeight());
+//                   sb.append("\n");
+//                   fwr.write(sb.toString());
+//               }
+//           }
            fwr.flush();
            fwr.close();
        }catch (Exception e){
