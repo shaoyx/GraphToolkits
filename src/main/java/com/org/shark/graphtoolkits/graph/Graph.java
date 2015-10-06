@@ -1,9 +1,7 @@
 package com.org.shark.graphtoolkits.graph;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -114,12 +112,50 @@ public class Graph {
 				degreeSum += degreeList.get(vid);
 			}
 			System.out.println("Vertex="+vertexSize+" Edge="+edgeSize +" degreeSum="+degreeSum);
+            saveGraph();
 			fbr.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 	}
+
+    private void saveGraph() {
+       try{
+           FileOutputStream fout = new FileOutputStream("weight_graph_reforme");
+           BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
+           fwr.write("Vertex List\n");
+           for(int vid : vertexSet.keySet()) {
+              Vertex v = vertexSet.get(vid);
+               StringBuffer sb = new StringBuffer();
+               sb.append(v.getVid());
+               sb.append(" ");
+               sb.append(this.degreeList.get(v.getVid()));
+               sb.append(" ");
+               sb.append(v.getWeight());
+               sb.append("\n");
+               fwr.write(sb.toString());
+           }
+           fwr.write("Edge List\n");
+           for(int vid : edgeList.keySet()) {
+               ArrayList<Edge> nbrs = edgeList.get(vid);
+               for(Edge edge : nbrs) {
+                   StringBuffer sb = new StringBuffer();
+                   sb.append(vid);
+                   sb.append(" ");
+                   sb.append(edge.getId());
+                   sb.append(" ");
+                   sb.append(edge.getWeight());
+                   sb.append("\n");
+                   fwr.write(sb.toString());
+               }
+           }
+           fwr.flush();
+           fwr.close();
+       }catch (Exception e){
+           e.printStackTrace();
+        }
+    }
 	
 	/**
 	 * This is load from adjacency format

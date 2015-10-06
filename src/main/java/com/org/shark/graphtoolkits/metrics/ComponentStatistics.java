@@ -31,6 +31,7 @@ public class ComponentStatistics implements GenericGraphTool {
         else {
            this.threshold = 20; //default is 20 matches
         }
+        System.out.println("threshold="+this.threshold);
         findComponents();
     }
 
