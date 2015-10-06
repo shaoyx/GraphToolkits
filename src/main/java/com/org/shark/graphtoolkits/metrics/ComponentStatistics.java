@@ -77,7 +77,7 @@ public class ComponentStatistics implements GenericGraphTool {
         int size = 1;
         queue.add(startId);
         visited.add(startId);
-        if(vertexSet.get(startId).getWeight() < this.threshold) {
+        if(vertexSet.get(startId).getWeight() < this.threshold + 1e-6) {
             return size;
         }
         while(!queue.isEmpty()) {
@@ -90,8 +90,8 @@ public class ComponentStatistics implements GenericGraphTool {
                 Edge e = nbrs.get(idx);
                 //filter by visited or the weight is below threshold
                 if(visited.contains(e.getId()) ||
-                        e.getWeight() < average_weight || //filter by average weight under random model;
-                        vertexSet.get(e.getId()).getWeight() < this.threshold) //filter by vertex threshold;
+                        e.getWeight() < average_weight + 1e-6 || //filter by average weight under random model;
+                        vertexSet.get(e.getId()).getWeight() < this.threshold + 1e-6) //filter by vertex threshold;
                     continue;
                 visited.add(e.getId());
                 queue.add(e.getId());
