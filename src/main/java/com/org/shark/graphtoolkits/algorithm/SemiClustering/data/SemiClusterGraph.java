@@ -1,4 +1,4 @@
-package com.org.shark.graphtoolkits.algorithm.semiclustering.data;
+package com.org.shark.graphtoolkits.algorithm.SemiClustering.data;
 
 import java.util.HashMap;
 

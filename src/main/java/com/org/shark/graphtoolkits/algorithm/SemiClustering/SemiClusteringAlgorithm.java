@@ -1,8 +1,8 @@
-package com.org.shark.graphtoolkits.algorithm.semiclustering;
+package com.org.shark.graphtoolkits.algorithm.SemiClustering;
 
 import com.org.shark.graphtoolkits.GenericGraphTool;
-import com.org.shark.graphtoolkits.algorithm.semiclustering.data.SemiClusterGraph;
-import com.org.shark.graphtoolkits.algorithm.semiclustering.data.SemiClusterVertex;
+import com.org.shark.graphtoolkits.algorithm.SemiClustering.data.SemiClusterGraph;
+import com.org.shark.graphtoolkits.algorithm.SemiClustering.data.SemiClusterVertex;
 import com.org.shark.graphtoolkits.graph.Edge;
 import com.org.shark.graphtoolkits.graph.Graph;
 import com.org.shark.graphtoolkits.graph.Vertex;
@@ -36,8 +36,13 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
     @Override
     public void run(CommandLine cmd) {
-        String gPath = cmd.getOptionValue("i");
-        graphData = new Graph(gPath);
+        String gPath;
+        gPath = cmd.getOptionValue("i");
+        double th = 3.0;
+        if(cmd.hasOption("th")) {
+            th = Double.valueOf(cmd.getOptionValue("th"));
+        }
+        graphData = new Graph(gPath, th);
         this.semiClusterMaximumVertexCount = 10;
         this.vertexMaxClusterCount = 5;
         this.vertexMaxCandidateClusterCount = 5;

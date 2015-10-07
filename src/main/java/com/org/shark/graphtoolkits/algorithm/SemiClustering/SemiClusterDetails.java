@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-package com.org.shark.graphtoolkits.algorithm.semiclustering;
-
-import java.util.Objects;
+package com.org.shark.graphtoolkits.algorithm.SemiClustering;
 
 /**
  * The SemiClusterDetails class is used to store a Semi-Cluster ID and its

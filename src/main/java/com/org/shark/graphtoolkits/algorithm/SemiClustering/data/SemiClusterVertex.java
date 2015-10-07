@@ -1,6 +1,6 @@
-package com.org.shark.graphtoolkits.algorithm.semiclustering.data;
+package com.org.shark.graphtoolkits.algorithm.SemiClustering.data;
 
-import com.org.shark.graphtoolkits.algorithm.semiclustering.SemiClusterInfo;
+import com.org.shark.graphtoolkits.algorithm.SemiClustering.SemiClusterInfo;
 import com.org.shark.graphtoolkits.graph.Vertex;
 
 import java.util.ArrayList;

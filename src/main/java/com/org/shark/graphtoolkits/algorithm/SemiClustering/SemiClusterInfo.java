@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.org.shark.graphtoolkits.algorithm.semiclustering;
+package com.org.shark.graphtoolkits.algorithm.SemiClustering;
 
 import java.util.*;
 
