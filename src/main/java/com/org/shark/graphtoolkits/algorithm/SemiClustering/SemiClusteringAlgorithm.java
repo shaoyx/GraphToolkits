@@ -33,26 +33,26 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
     @Override
     public void run(CommandLine cmd) {
-        graphData = new Graph(cmd.getOptionValue("-i"));
+        graphData = new Graph(cmd.getOptionValue("i"));
         this.semiClusterMaximumVertexCount = 10;
         this.vertexMaxClusterCount = 5;
         this.vertexMaxCandidateClusterCount = 5;
         this.iterationLimitation = 20;
 
-        if(cmd.hasOption("-iter")) {
-            this.iterationLimitation = Integer.valueOf(cmd.getOptionValue("-iter"));
+        if(cmd.hasOption("iter")) {
+            this.iterationLimitation = Integer.valueOf(cmd.getOptionValue("iter"));
         }
 
-        if(cmd.hasOption("-cSize")) {
-            this.semiClusterMaximumVertexCount = Integer.valueOf(cmd.getOptionValue("-cSize"));
+        if(cmd.hasOption("cSize")) {
+            this.semiClusterMaximumVertexCount = Integer.valueOf(cmd.getOptionValue("cSize"));
         }
 
-        if(cmd.hasOption("-vcSize")) {
-            this.vertexMaxClusterCount = Integer.valueOf(cmd.getOptionValue("-vcSize"));
+        if(cmd.hasOption("vcSize")) {
+            this.vertexMaxClusterCount = Integer.valueOf(cmd.getOptionValue("vcSize"));
         }
 
-        if(cmd.hasOption("-vccSize")) {
-            this.vertexMaxCandidateClusterCount = Integer.valueOf(cmd.getOptionValue("-vccSize"));
+        if(cmd.hasOption("vccSize")) {
+            this.vertexMaxCandidateClusterCount = Integer.valueOf(cmd.getOptionValue("vccSize"));
         }
 
         computeSemiClusters();
