@@ -53,6 +53,7 @@ public class GraphTransform implements GenericGraphTool {
             BufferedReader fbr = new BufferedReader(new InputStreamReader(fin));
             String line;
             int lineNum = 0;
+            edgeWeights = new HashMap<Integer, HashMap<Integer, Integer>>();
             while((line = fbr.readLine()) != null) {
                 lineNum++;
                 if (line.startsWith("#")) continue;
