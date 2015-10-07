@@ -27,12 +27,12 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
     private int vertexMaxCandidateClusterCount;
     private int iterationLimitation;
 
+    /* the raw graph data */
     private Graph graphData;
 
     private SemiClusterGraph semiClusterGraph;
 
     public SemiClusteringAlgorithm() {}
-
 
     @Override
     public void run(CommandLine cmd) {
