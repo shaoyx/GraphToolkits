@@ -1,7 +1,11 @@
-package com.org.shark.graphtoolkits.algorithm.SemiClustering;
+package com.org.shark.graphtoolkits.algorithm.semiclustering;
 
 import com.org.shark.graphtoolkits.GenericGraphTool;
+import com.org.shark.graphtoolkits.algorithm.semiclustering.data.SemiClusterGraph;
+import com.org.shark.graphtoolkits.algorithm.semiclustering.data.SemiClusterVertex;
+import com.org.shark.graphtoolkits.graph.Edge;
 import com.org.shark.graphtoolkits.graph.Graph;
+import com.org.shark.graphtoolkits.graph.Vertex;
 import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
 import org.apache.commons.cli.CommandLine;
 
@@ -17,9 +21,12 @@ import java.util.*;
 public class SemiClusteringAlgorithm implements GenericGraphTool {
     private int semiClusterMaximumVertexCount;
     private int vertexMaxClusterCount;
+    private int vertexMaxCandidateClusterCount;
     private int iterationLimitation;
 
     private Graph graphData;
+
+    private SemiClusterGraph semiClusterGraph;
 
     public SemiClusteringAlgorithm() {}
 
@@ -28,7 +35,8 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
     public void run(CommandLine cmd) {
         graphData = new Graph(cmd.getOptionValue("-i"));
         this.semiClusterMaximumVertexCount = 10;
-        this.vertexMaxClusterCount = 2;
+        this.vertexMaxClusterCount = 5;
+        this.vertexMaxCandidateClusterCount = 5;
         this.iterationLimitation = 20;
 
         if(cmd.hasOption("-iter")) {
@@ -41,6 +49,10 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
         if(cmd.hasOption("-vcSize")) {
             this.vertexMaxClusterCount = Integer.valueOf(cmd.getOptionValue("-vcSize"));
+        }
+
+        if(cmd.hasOption("-vccSize")) {
+            this.vertexMaxCandidateClusterCount = Integer.valueOf(cmd.getOptionValue("-vccSize"));
         }
 
         computeSemiClusters();
@@ -61,21 +73,30 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
     }
 
     private void initialCluster() {
+        semiClusterGraph = new SemiClusterGraph();
+
         for(Integer vid : this.graphData.getVertexSet().keySet()) {
+            SemiClusterVertex scVertex = new SemiClusterVertex();
+
             List<Integer> lV = new ArrayList<Integer>();
             lV.add(vid);
             String newClusterName = "C" + createNewSemiClusterName(lV);
-            SemiClusterMessage initialClusters = new SemiClusterMessage();
+            SemiClusterInfo initialClusters = new SemiClusterInfo();
             initialClusters.setSemiClusterId(newClusterName);
             initialClusters.addVertexList(lV);
             initialClusters.setScore(1);
 
+            ArrayList<SemiClusterInfo> scInfoArrayList = new ArrayList<SemiClusterInfo>();
+            scInfoArrayList.add(initialClusters);
+            scVertex.setPreCandidateSemiClusters(scInfoArrayList);
+
             Set<SemiClusterDetails> scList = new TreeSet<SemiClusterDetails>();
             scList.add(new SemiClusterDetails(newClusterName, 1.0));
-            SemiClusterMessage vertexValue = new SemiClusterMessage();
-            //TODO: use SemiClusterVertex
-//            vertexValue.setSemiClusterContainThis(scList);
-//            this.setValue(vertexValue);
+            SemiClusterInfo vertexValue = new SemiClusterInfo();
+            vertexValue.setSemiClusterContainThis(scList);
+            scVertex.setVertexClusterInfo(vertexValue);
+
+            semiClusterGraph.addSemiClusterVertex(scVertex);
         }
     }
 
@@ -85,46 +106,59 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
      */
     private boolean updateCluster() {
         for(Integer vid : this.graphData.getVertexSet().keySet()) {
-            TreeSet<SemiClusterMessage> candidates = new TreeSet<SemiClusterMessage>();
 
-            for (SemiClusterMessage msg : messages) {
-                candidates.add(msg);
+            Vertex curV = graphData.getVertexById(vid);
+            ArrayList<Edge> curVNbrs = graphData.getNeighbors(vid);
+            SemiClusterVertex curSCVertex = semiClusterGraph.getSemiClusterVertex(vid);
 
-                if (!msg.contains(this.getId().get())
-                        && msg.size() == semiClusterMaximumVertexCount) {
-                    SemiClusterMessage msgNew = WritableUtils.clone(msg, this.getConf());
-                    msgNew.addVertex(SemiClusterMessage.createGroupedVertex(this));
-                    msgNew.setSemiClusterId("C"
-                            + createNewSemiClusterName(msgNew.getVertexList()));
-                    msgNew.setScore(semiClusterScoreCalcuation(msgNew));
+            TreeSet<SemiClusterInfo> candidates = new TreeSet<SemiClusterInfo>();
 
-                    candidates.add(msgNew);
+            for(Edge e : curVNbrs) {
+                SemiClusterVertex nbrSCVertex = semiClusterGraph.getSemiClusterVertex(e.getId());
+                ArrayList<SemiClusterInfo> preSemiClusterInfo = nbrSCVertex.getPreCandidateSemiClusters();
+
+                for (SemiClusterInfo msg : preSemiClusterInfo) {
+                    candidates.add(msg);
+
+                    if (!msg.contains(vid)
+                            && msg.size() < semiClusterMaximumVertexCount) {
+                        SemiClusterInfo msgNew = msg.copy();
+                        msgNew.addVertex(vid);
+                        msgNew.setSemiClusterId("C"
+                                + createNewSemiClusterName(msgNew.getVertexList()));
+                        msgNew.setScore(semiClusterScoreCalcuation(msgNew));
+
+                        candidates.add(msgNew);
+                    }
                 }
+
             }
 
-            Iterator<SemiClusterMessage> bestCandidates = candidates
-                    .descendingIterator();
+            Iterator<SemiClusterInfo> bestCandidates = candidates.descendingIterator();
             int count = 0;
 
-            while (bestCandidates.hasNext() && count < graphJobMessageSentCount) {
-                SemiClusterMessage candidate = bestCandidates.next();
-                this.sendMessageToAllEdges(candidate);
+            ArrayList<SemiClusterInfo> curSemiClusterInfo = new ArrayList<SemiClusterInfo>();
+            while (bestCandidates.hasNext() && count < vertexMaxCandidateClusterCount) {
+                SemiClusterInfo candidate = bestCandidates.next();
+                curSemiClusterInfo.add(candidate);
                 count++;
             }
+            curSCVertex.setCurCandidateSemiClusters(curSemiClusterInfo);
 
             // Update candidates
-            SemiClusterMessage value = this.getValue();
+            SemiClusterInfo value = curSCVertex.getVertexClusterInfo();
             Set<SemiClusterDetails> clusters = value.getSemiClusterContainThis();
-            for (SemiClusterMessage msg : candidates) {
-                if (clusters.size() > graphJobVertexMaxClusterCount) {
+            for (SemiClusterInfo msg : candidates) {
+                if (clusters.size() > vertexMaxClusterCount) {
                     break;
                 } else {
                     clusters.add(new SemiClusterDetails(msg.getSemiClusterId(), msg
                             .getScore()));
                 }
             }
+            value.setClusters(clusters, vertexMaxClusterCount);
+            curSCVertex.setVertexClusterInfo(value);
         }
-
         return true;
     }
 
@@ -140,5 +174,29 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
         }
         Collections.sort(vertexIDList);
         return (vertexIDList.hashCode());
+    }
+
+    public double semiClusterScoreCalcuation(SemiClusterInfo message) {
+        double iC = 0.0, bC = 0.0, fB = 0.0, sC = 0.0;
+        int vC = 0, eC = 0;
+        vC = message.size();
+        for (Integer vid : message.getVertexList()) {
+
+            ArrayList<Edge> vnbrs = graphData.getNeighbors(vid);
+
+            for(Edge e : vnbrs) {
+                int tid = e.getId();
+                double weight = e.getWeight();
+                eC++;
+                if (message.contains(tid) && weight > 0.0) { //TODO: fake weight justification
+                    iC = iC + weight;
+                } else if (weight > 0.0) {
+                    bC = bC + weight;
+                }
+            }
+        }
+        if (vC > 1)
+            sC = ((iC - fB * bC) / ((vC * (vC - 1)) / 2)) / eC;
+        return sC;
     }
 }

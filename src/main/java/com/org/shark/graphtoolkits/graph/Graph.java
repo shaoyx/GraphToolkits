@@ -53,6 +53,10 @@ public class Graph {
 	public int getEdgeSize(){
 		return edgeSize;
 	}
+
+	public Vertex getVertexById(int vid) {
+		return vertexSet.get(vid);
+	}
 	
 	public ArrayList<Edge> getNeighbors(int vid){
 		return edgeList.get(vid);
@@ -141,7 +145,7 @@ public class Graph {
 //				   sb.append(vid);
 				   sb.append(" ");
 				   sb.append(edge.getId());
-//				   sb.append(" ");
+				   sb.append(" ");
 				   sb.append(edge.getWeight());
 //				   sb.append("\n");
 			   }
