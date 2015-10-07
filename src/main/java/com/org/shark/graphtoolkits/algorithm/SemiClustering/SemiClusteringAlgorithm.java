@@ -95,12 +95,14 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
             ArrayList<SemiClusterInfo> scInfoArrayList = new ArrayList<SemiClusterInfo>();
             scInfoArrayList.add(initialClusters);
-            scVertex.setPreCandidateSemiClusters(scInfoArrayList);
 
             Set<SemiClusterDetails> scList = new TreeSet<SemiClusterDetails>();
             scList.add(new SemiClusterDetails(newClusterName, 1.0));
             SemiClusterInfo vertexValue = new SemiClusterInfo();
             vertexValue.setSemiClusterContainThis(scList);
+
+            scVertex.setVid(vid);
+            scVertex.setPreCandidateSemiClusters(scInfoArrayList);
             scVertex.setVertexClusterInfo(vertexValue);
 
             semiClusterGraph.addSemiClusterVertex(scVertex);
@@ -116,6 +118,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
             Vertex curV = graphData.getVertexById(vid);
             ArrayList<Edge> curVNbrs = graphData.getNeighbors(vid);
+//            System.out.println(semiClusterGraph+" ");
             SemiClusterVertex curSCVertex = semiClusterGraph.getSemiClusterVertex(vid);
 
             TreeSet<SemiClusterInfo> candidates = new TreeSet<SemiClusterInfo>();

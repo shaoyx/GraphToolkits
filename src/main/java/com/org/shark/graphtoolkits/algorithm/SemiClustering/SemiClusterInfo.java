@@ -26,7 +26,7 @@ import java.util.*;
  * vertex.
  * 
  */
-public class SemiClusterInfo {
+public class SemiClusterInfo implements Comparable<SemiClusterInfo> {
 
   private String semiClusterId = null;
   private double semiClusterScore = 0.0;
@@ -111,9 +111,7 @@ public class SemiClusterInfo {
     this.semiClusterContainThis = setSort;
   }
 
-  public int compareTo(SemiClusterInfo m) {
-    return (this.getSemiClusterId().compareTo(m.getSemiClusterId()));
-  }
+
 
   @Override
   public int hashCode() {
@@ -159,4 +157,9 @@ public class SemiClusterInfo {
     return scInfo;
   }
 
+
+  @Override
+  public int compareTo(SemiClusterInfo m) {
+    return (this.getSemiClusterId().compareTo(m.getSemiClusterId()));
+  }
 }
