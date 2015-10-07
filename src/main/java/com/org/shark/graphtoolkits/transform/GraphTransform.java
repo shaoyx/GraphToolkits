@@ -31,11 +31,11 @@ public class GraphTransform implements GenericGraphTool {
 
     @Override
     public void run(CommandLine cmd) {
-        String path = cmd.getOptionValue("-i");
+        String path = cmd.getOptionValue("i");
         String savePath = "weighted_graph.data";
 
-        if(cmd.hasOption("-op")) {
-            savePath = cmd.getOptionValue("-op");
+        if(cmd.hasOption("op")) {
+            savePath = cmd.getOptionValue("op");
         }
 
         graphEdgeToWeightGraph(path, savePath);
