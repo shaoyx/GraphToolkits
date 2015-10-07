@@ -18,6 +18,8 @@
 
 package com.org.shark.graphtoolkits.algorithm.semiclustering;
 
+import java.util.Objects;
+
 /**
  * The SemiClusterDetails class is used to store a Semi-Cluster ID and its
  * score.This class implements Comparable interface which compares the score of
@@ -25,7 +27,8 @@ package com.org.shark.graphtoolkits.algorithm.semiclustering;
  * 
  */
 
-public class SemiClusterDetails {
+public class SemiClusterDetails implements Comparable<SemiClusterDetails>{
+
   private String semiClusterId;
   private double semiClusterScore;
 
@@ -88,5 +91,10 @@ public class SemiClusterDetails {
   @Override
   public String toString() {
     return semiClusterId;
+  }
+
+  @Override
+  public int compareTo(SemiClusterDetails sc) {
+    return (this.getSemiClusterId().compareTo(sc.getSemiClusterId()));
   }
 }

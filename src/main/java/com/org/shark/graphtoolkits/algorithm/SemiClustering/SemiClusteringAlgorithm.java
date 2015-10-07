@@ -9,6 +9,9 @@ import com.org.shark.graphtoolkits.graph.Vertex;
 import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
 import org.apache.commons.cli.CommandLine;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.*;
 
 /**
@@ -33,7 +36,8 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
     @Override
     public void run(CommandLine cmd) {
-        graphData = new Graph(cmd.getOptionValue("i"));
+        String gPath = cmd.getOptionValue("i");
+        graphData = new Graph(gPath);
         this.semiClusterMaximumVertexCount = 10;
         this.vertexMaxClusterCount = 5;
         this.vertexMaxCandidateClusterCount = 5;
@@ -56,6 +60,8 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
         }
 
         computeSemiClusters();
+
+        saveResults(gPath+".clusters");
     }
 
     @Override
@@ -160,6 +166,35 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             curSCVertex.setVertexClusterInfo(value);
         }
         return true;
+    }
+
+    public void saveResults(String savePath) {
+        try{
+            FileOutputStream fout = new FileOutputStream(savePath);
+            BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
+            for(int vid : graphData.getVertexSet().keySet()) {
+                SemiClusterVertex scVertex = semiClusterGraph.getSemiClusterVertex(vid);
+                SemiClusterInfo scInfo = scVertex.getVertexClusterInfo();
+                Set<SemiClusterDetails> scContainVid = scInfo.getSemiClusterContainThis();
+
+                for(SemiClusterDetails scd : scContainVid) {
+
+                    StringBuffer sb = new StringBuffer();
+                    sb.append(vid);
+                    sb.append(" ");
+                    sb.append(scd.getSemiClusterId());
+                    sb.append(" ");
+                    sb.append(scd.getSemiClusterScore());
+                    sb.append("\n");
+
+                    fwr.write(sb.toString());
+                }
+            }
+            fwr.flush();
+            fwr.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
