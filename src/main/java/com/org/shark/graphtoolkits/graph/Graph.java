@@ -1,11 +1,8 @@
 package com.org.shark.graphtoolkits.graph;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 public class Graph {
@@ -16,6 +13,8 @@ public class Graph {
 	private HashMap<Integer, ArrayList<Edge>> edgeList;
 	private int edgeSize;
 	private int vertexSize;
+
+    private double edgeWeightThreshold;
 	
 	public Graph(String graphFilePath){
 		vertexSet = new HashMap<Integer, Vertex>();
@@ -25,7 +24,17 @@ public class Graph {
 		vertexSize = 0;
 		loadGraphFromEdge(graphFilePath);
 	}
-	
+
+    public Graph(String graphFilePath, double threshold){
+        vertexSet = new HashMap<Integer, Vertex>();
+        degreeList = new HashMap<Integer,Integer>();
+        edgeList = new HashMap<Integer, ArrayList<Edge>>();
+        edgeSize = 0;
+        vertexSize = 0;
+        this.edgeWeightThreshold = threshold;
+        loadGraphFromEdge(graphFilePath);
+    }
+
 	public Graph(String graphFilePath, boolean isEdge){
 		vertexSet = new HashMap<Integer, Vertex>();
 		degreeList = new HashMap<Integer,Integer>();
@@ -68,6 +77,7 @@ public class Graph {
 			BufferedReader fbr = new BufferedReader(new InputStreamReader(fin));
 			String line;
             int lineNum = 0;
+            int filterEdgeNum = 0;
 			while((line = fbr.readLine()) != null){
                 lineNum++;
 				if(line.startsWith("#")) continue;
@@ -86,6 +96,11 @@ public class Graph {
 				int sv = Integer.valueOf(values[0]);
 				int ev = Integer.valueOf(values[1]);
 				double ew = Double.valueOf(values[2]);
+
+                if(ew < this.edgeWeightThreshold) { // edge weight filter
+                    filterEdgeNum++;
+                    continue;
+                }
 
 				if(!vertexSet.containsKey(sv)){
 					vertexSize++;
@@ -115,7 +130,7 @@ public class Graph {
 			for(int vid: degreeList.keySet()){
 				degreeSum += degreeList.get(vid);
 			}
-			System.out.println("Vertex="+vertexSize+" Edge="+edgeSize +" degreeSum="+degreeSum);
+			System.out.println("Vertex="+vertexSize+" Edge="+edgeSize +" degreeSum="+degreeSum+" filterEdgeNum="+filterEdgeNum);
             saveGraph();
 			fbr.close();
 		} catch (IOException e) {
@@ -176,7 +191,7 @@ public class Graph {
 	
 	/**
 	 * This is load from adjacency format
-	 * @param graphFilePath
+	 * @param graphFilePath input graph path
 	 */
 	private void loadGraph(String graphFilePath){
 		try {
