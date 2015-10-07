@@ -62,7 +62,7 @@ public class GraphTransform implements GenericGraphTool {
                     continue;
                 }
 
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < values.length; i++) {
                     if (values[i] == null || values[i].length() == 0) {
                         System.out.println("Error line " + lineNum + ": " + line);
                     }
