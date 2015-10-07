@@ -48,6 +48,7 @@ public class GraphTransform implements GenericGraphTool {
 
     public void graphEdgeToWeightGraph(String path, String savePath) {
         try {
+            System.out.println("in path="+path+" outPath=" +savePath);
             FileInputStream fin = new FileInputStream(path);
             BufferedReader fbr = new BufferedReader(new InputStreamReader(fin));
             String line;

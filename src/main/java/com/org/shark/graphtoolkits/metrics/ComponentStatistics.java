@@ -19,7 +19,7 @@ import java.util.*;
 
 @GraphAnalyticTool(
         name = "Graph Component Statistics",
-        description = "Counting the Degree. format: (#vid degrees bigD smallD equalD bigL smallL)"
+        description = ""
 )
 public class ComponentStatistics implements GenericGraphTool {
 

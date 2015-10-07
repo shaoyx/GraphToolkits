@@ -22,6 +22,7 @@ public class GraphTools {
 		  OPTIONS.addOption("i", "input", true, "Path of the input graph");
 
 		  OPTIONS.addOption("th", "threshold", true, "Threshold for edge weight");
+		  OPTIONS.addOption("op", "outputPath", true, "The path of output files");
 
 		  }
 	
