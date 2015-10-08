@@ -107,17 +107,22 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             ArrayList<SemiClusterInfo> scInfoArrayList = new ArrayList<SemiClusterInfo>();
             scInfoArrayList.add(initialClusters);
 
-            Set<SemiClusterDetails> scList = new TreeSet<SemiClusterDetails>();
-            scList.add(new SemiClusterDetails(newClusterName, 1.0));
-            SemiClusterInfo vertexValue = new SemiClusterInfo();
-            vertexValue.setSemiClusterContainThis(scList);
+            ArrayList<SemiClusterInfo> scList = new ArrayList<SemiClusterInfo>();
+            SemiClusterInfo initialClusters2 = new SemiClusterInfo();
+            initialClusters2.setSemiClusterId(newClusterName);
+            initialClusters2.addVertexList(lV);
+            initialClusters2.setScore(1);
+            scList.add(initialClusters2);
+//            SemiClusterInfo vertexValue = new SemiClusterInfo();
+//            vertexValue.setSemiClusterContainThis(scList);
 
             scVertex.setVid(vid);
             scVertex.setPreCandidateSemiClusters(scInfoArrayList);
-            scVertex.setVertexClusterInfo(vertexValue);
+//            scVertex.setVertexClusterInfo(vertexValue);
+            scVertex.setVertexClusterContainThis(scList);
 
             if(vid == 136176934) {
-                System.out.println("vid "+vid+": initial cluster ==> " + vertexValue);
+                System.out.println("vid "+vid+": initial cluster ==> " + scVertex.getVertexClusterContainThis());
             }
 
             semiClusterGraph.addSemiClusterVertex(scVertex);
@@ -165,31 +170,48 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             ArrayList<SemiClusterInfo> curSemiClusterInfo = new ArrayList<SemiClusterInfo>();
             while (bestCandidates.hasNext() && count < vertexMaxCandidateClusterCount) {
                 SemiClusterInfo candidate = bestCandidates.next();
-//                System.out.println("Score of Best candidates: " + candidate.getScore());
                 curSemiClusterInfo.add(candidate);
                 count++;
             }
             curSCVertex.setCurCandidateSemiClusters(curSemiClusterInfo);
 
             // Update candidates
-            SemiClusterInfo value = curSCVertex.getVertexClusterInfo();
+//            SemiClusterInfo value = curSCVertex.getVertexClusterInfo();
+            ArrayList<SemiClusterInfo> clusters = curSCVertex.getVertexClusterContainThis();
             bestCandidates = candidates.descendingIterator();
-            Set<SemiClusterDetails> clusters = value.getSemiClusterContainThis();
+//            Set<SemiClusterDetails> clusters = value.getSemiClusterContainThis();
             while(bestCandidates.hasNext()) {
                 SemiClusterInfo msg = bestCandidates.next();
                 if(!msg.contains(vid)) continue;;
                 if(vid == 136176934) {
                     System.out.println("update semiCluster: Vid=" + vid + " SemiClusterInfo: "+ msg.toString());
                 }
-                if (clusters.size() > vertexMaxClusterCount) {
-                    break;
-                } else {
-                    clusters.add(new SemiClusterDetails(msg.getSemiClusterId(), msg
-                            .getScore()));
-                }
+//                if (clusters.size() > vertexMaxClusterCount) {
+//                    break;
+//                } else {
+//                    clusters.add(new SemiClusterDetails(msg.getSemiClusterId(), msg
+//                            .getScore()));
+//                }
+                SemiClusterInfo newCluster = msg.copy();
+                newCluster.addVertex(vid);
+                newCluster.setSemiClusterId("C"
+                        + createNewSemiClusterName(newCluster.getVertexList()));
+                newCluster.setScore(msg.getScore());
+                clusters.add(newCluster);
             }
-            value.setClusters(clusters, vertexMaxClusterCount);
-            curSCVertex.setVertexClusterInfo(value);
+//            System.out.println("output best candidate !!");
+//            value.setClusters(clusters, vertexMaxClusterCount);
+//            curSCVertex.setVertexClusterInfo(value);
+            Collections.sort(clusters);
+//            for(SemiClusterInfo scInfo : clusters) {
+//                System.out.println(scInfo);
+//            }
+            if(clusters.size() <= vertexMaxClusterCount)
+                curSCVertex.setVertexClusterContainThis(clusters);
+            else {
+                int startIdx = clusters.size() - vertexMaxClusterCount;
+                curSCVertex.setVertexClusterContainThis(new ArrayList<SemiClusterInfo>(clusters.subList(startIdx, clusters.size())));
+            }
         }
         //iterative
         for(Integer vid : this.graphData.getVertexSet().keySet()) {
@@ -205,17 +227,19 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
             for(int vid : graphData.getVertexSet().keySet()) {
                 SemiClusterVertex scVertex = semiClusterGraph.getSemiClusterVertex(vid);
-                SemiClusterInfo scInfo = scVertex.getVertexClusterInfo();
-                Set<SemiClusterDetails> scContainVid = scInfo.getSemiClusterContainThis();
+//                SemiClusterInfo scInfo = scVertex.getVertexClusterInfo();
+                ArrayList<SemiClusterInfo> scInfos = scVertex.getVertexClusterContainThis();
+//                Set<SemiClusterDetails> scContainVid = scInfo.getSemiClusterContainThis();
 
-                for(SemiClusterDetails scd : scContainVid) {
+//                for(SemiClusterDetails scd : scContainVid) {
+                for(SemiClusterInfo scd : scInfos) {
 
                     StringBuffer sb = new StringBuffer();
                     sb.append(vid);
                     sb.append(" ");
                     sb.append(scd.getSemiClusterId());
                     sb.append(" ");
-                    sb.append(scd.getSemiClusterScore());
+                    sb.append(scd.getVertexList());
                     sb.append("\n");
 
                     fwr.write(sb.toString());

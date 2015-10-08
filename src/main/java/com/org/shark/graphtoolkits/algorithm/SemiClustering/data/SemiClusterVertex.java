@@ -10,7 +10,8 @@ import java.util.ArrayList;
  */
 public class SemiClusterVertex extends Vertex {
 
-    SemiClusterInfo vertexClusterInfo;
+//    SemiClusterInfo vertexClusterInfo;
+    ArrayList<SemiClusterInfo> vertexClusterContainThis;
     ArrayList<SemiClusterInfo> preCandidateSemiClusters;
     ArrayList<SemiClusterInfo> curCandidateSemiClusters;
 
@@ -22,14 +23,21 @@ public class SemiClusterVertex extends Vertex {
         super(vid, weight);
     }
 
-    public SemiClusterInfo getVertexClusterInfo() {
-        return vertexClusterInfo;
+//    public SemiClusterInfo getVertexClusterInfo() {
+//        return vertexClusterInfo;
+//    }
+//
+//    public void setVertexClusterInfo(SemiClusterInfo vcInfo) {
+//        vertexClusterInfo = vcInfo;
+//    }
+
+    public ArrayList<SemiClusterInfo> getVertexClusterContainThis() {
+        return vertexClusterContainThis;
     }
 
-    public void setVertexClusterInfo(SemiClusterInfo vcInfo) {
-        vertexClusterInfo = vcInfo;
+    public void setVertexClusterContainThis(ArrayList<SemiClusterInfo> vcInfo) {
+        vertexClusterContainThis = vcInfo;
     }
-
     public ArrayList<SemiClusterInfo> getPreCandidateSemiClusters() {
         return this.preCandidateSemiClusters;
     }
