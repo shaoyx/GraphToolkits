@@ -78,7 +78,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
         computeSemiClusters();
 
-        saveResults(gPath+".clusters");
+        saveResults(gPath + ".clusters");
     }
 
     @Override
@@ -195,7 +195,15 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 clusters.add(newCluster);
             }
 
+//            System.out.println("Update clusters: ");
+//            for(SemiClusterInfo info : clusters) {
+//                System.out.println("before="+info);
+//            }
+
             clusters = cleanNewClusters(clusters, vertexMaxClusterCount);
+//            for(SemiClusterInfo info : clusters) {
+//                System.out.println("after="+info);
+//            }
 //            System.out.println("after clean clusters size="+clusters.size());
             curSCVertex.setVertexClusterContainThis(clusters);
         }
@@ -215,7 +223,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                     @Override
                     public int compare(SemiClusterInfo o1, SemiClusterInfo o2) {
                         return (o1.getScore() == o2.getScore() ? 0
-                                : o1.getScore() < o2.getScore() ? -1 : 1);
+                                : o1.getScore() > o2.getScore() ? -1 : 1);
                     }
                 });
         setSort.addAll(clusters);
