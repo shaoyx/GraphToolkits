@@ -57,6 +57,13 @@ public class ComponentStatistics implements GenericGraphTool {
     }
 
     private void twoHopSearch(int sVertex) {
+
+        try{
+            FileOutputStream fout = new FileOutputStream("search_path_"+sVertex);
+            BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
+            fwr.flush();
+            fwr.close();
+
         Queue<Integer> queue = new LinkedList<Integer>();
         Set<Integer> visited = new HashSet<Integer>();
         ArrayList<Integer> cc = new ArrayList<Integer>();
@@ -77,6 +84,16 @@ public class ComponentStatistics implements GenericGraphTool {
             if(nbrs == null) continue;
             for(int idx = 0; idx < nbrs.size(); idx++) {
                 Edge e = nbrs.get(idx);
+
+                StringBuffer sb = new StringBuffer();
+                sb.append(vid);
+                sb.append(" ");
+                sb.append(e.getId());
+                sb.append(" ");
+                sb.append(e.getWeight());
+                sb.append("\n");
+                fwr.write(sb.toString());
+
                 //filter by visited or the weight is below threshold
                 if(visited.contains(e.getId()))
                     continue;
@@ -89,7 +106,12 @@ public class ComponentStatistics implements GenericGraphTool {
                 }
             }
         }
-        saveComponent(sVertex, cc);
+            fwr.flush();
+            fwr.close();
+            saveComponent(sVertex, cc);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void findComponents() {
