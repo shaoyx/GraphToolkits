@@ -116,6 +116,10 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             scVertex.setPreCandidateSemiClusters(scInfoArrayList);
             scVertex.setVertexClusterInfo(vertexValue);
 
+            if(vid == 136176934) {
+                System.out.println("vid "+vid+": initial cluster ==> " + vertexValue);
+            }
+
             semiClusterGraph.addSemiClusterVertex(scVertex);
         }
     }
@@ -174,7 +178,9 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             while(bestCandidates.hasNext()) {
                 SemiClusterInfo msg = bestCandidates.next();
                 if(!msg.contains(vid)) continue;;
-//                System.out.println("Vid=" + vid + " SemiClusterInfo: "+ msg.toString());
+                if(vid == 136176934) {
+                    System.out.println("update semiCluster: Vid=" + vid + " SemiClusterInfo: "+ msg.toString());
+                }
                 if (clusters.size() > vertexMaxClusterCount) {
                     break;
                 } else {
