@@ -23,6 +23,7 @@ public class GraphTools {
 
 		  OPTIONS.addOption("th", "threshold", true, "Threshold for edge weight");
 		  OPTIONS.addOption("op", "outputPath", true, "The path of output files");
+		  OPTIONS.addOption("sv", "startVertex", true, "The start vertex for 2-hop search");
 
 		  OPTIONS.addOption("iter", "iteration", true, "The limitation of iteration");
 		  OPTIONS.addOption("cSize", "clusterSize", true, "The limitation of the number of cluster size");

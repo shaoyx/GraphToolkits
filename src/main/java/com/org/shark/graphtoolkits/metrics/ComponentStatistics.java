@@ -25,21 +25,65 @@ public class ComponentStatistics implements GenericGraphTool {
 
     private Graph graphData;
     private double threshold;
+    private int startVertex;
 
     public void run(CommandLine cmd) {
-        graphData = new Graph(cmd.getOptionValue("i"));
         if(cmd.hasOption("th")) {
-           this.threshold = Double.valueOf(cmd.getOptionValue("th"));
+            this.threshold = Double.valueOf(cmd.getOptionValue("th"));
         }
         else {
-           this.threshold = 20; //default is 20 matches
+            this.threshold = 3; //default is 20 matches
         }
-        System.out.println("threshold="+this.threshold);
-//        findComponents();
+
+        graphData = new Graph(cmd.getOptionValue("i"), this.threshold);
+
+        if(cmd.hasOption("sv")) {
+            this.startVertex = Integer.valueOf(cmd.getOptionValue("sv"));
+        }
+        else {
+            this.startVertex = -1;
+        }
+//        System.out.println("threshold="+this.threshold);
+        if(this.startVertex != -1) {
+            twoHopSearch(this.startVertex);
+        }
+        else {
+            findComponents();
+        }
     }
 
     public boolean verifyParameters(CommandLine cmd) {
         return true;
+    }
+
+    private void twoHopSearch(int sVertex) {
+        Queue<Integer> queue = new LinkedList<Integer>();
+        Set<Integer> visited = new HashSet<Integer>();
+        ArrayList<Integer> cc = new ArrayList<Integer>();
+        HashMap<Integer, Vertex> vertexSet = graphData.getVertexSet();
+
+        int size = 1;
+        queue.add(sVertex);
+        visited.add(sVertex);
+        cc.add(sVertex);
+        while(!queue.isEmpty()) {
+            int vid = queue.peek();
+            queue.remove();
+            Vertex vertex = vertexSet.get(vid);
+            ArrayList<Edge> nbrs = graphData.getNeighbors(vid);
+            if(nbrs == null) continue;
+            for(int idx = 0; idx < nbrs.size(); idx++) {
+                Edge e = nbrs.get(idx);
+                //filter by visited or the weight is below threshold
+                if(visited.contains(e.getId()))
+                    continue;
+                visited.add(e.getId());
+                queue.add(e.getId());
+                cc.add(e.getId());
+                size++;
+            }
+        }
+        saveComponent(sVertex, cc);
     }
 
     private void findComponents() {
