@@ -61,9 +61,6 @@ public class ComponentStatistics implements GenericGraphTool {
         try{
             FileOutputStream fout = new FileOutputStream("search_path_"+sVertex);
             BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
-            fwr.flush();
-            fwr.close();
-
         Queue<Integer> queue = new LinkedList<Integer>();
         Set<Integer> visited = new HashSet<Integer>();
         ArrayList<Integer> cc = new ArrayList<Integer>();
