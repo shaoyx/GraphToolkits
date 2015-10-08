@@ -155,6 +155,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             ArrayList<SemiClusterInfo> curSemiClusterInfo = new ArrayList<SemiClusterInfo>();
             while (bestCandidates.hasNext() && count < vertexMaxCandidateClusterCount) {
                 SemiClusterInfo candidate = bestCandidates.next();
+//                System.out.println("Score of Best candidates: " + candidate.getScore());
                 curSemiClusterInfo.add(candidate);
                 count++;
             }
@@ -162,8 +163,12 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
             // Update candidates
             SemiClusterInfo value = curSCVertex.getVertexClusterInfo();
+            bestCandidates = candidates.descendingIterator();
             Set<SemiClusterDetails> clusters = value.getSemiClusterContainThis();
-            for (SemiClusterInfo msg : candidates) {
+            while(bestCandidates.hasNext()) {
+                SemiClusterInfo msg = bestCandidates.next();
+                if(!msg.contains(vid)) continue;;
+//                System.out.println("Vid=" + vid + " SemiClusterInfo: "+ msg.toString());
                 if (clusters.size() > vertexMaxClusterCount) {
                     break;
                 } else {
@@ -245,7 +250,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             }
         }
         if (vC > 1)
-            sC = ((iC - fB * bC) / ((vC * (vC - 1)) / 2)) / eC;
+            sC = ((iC - fB * bC) / ((vC * (vC - 1)) / 2));// / eC;
         return sC;
     }
 }
