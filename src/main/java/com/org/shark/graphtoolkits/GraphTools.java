@@ -24,7 +24,12 @@ public class GraphTools {
 		  OPTIONS.addOption("th", "threshold", true, "Threshold for edge weight");
 		  OPTIONS.addOption("op", "outputPath", true, "The path of output files");
 
-		  }
+		  OPTIONS.addOption("iter", "iteration", true, "The limitation of iteration");
+		  OPTIONS.addOption("cSize", "clusterSize", true, "The limitation of the number of cluster size");
+		  OPTIONS.addOption("vcSize", "vertexClusterSize", true, "The limitation of the number of vertices in a cluster");
+		  OPTIONS.addOption("vccSize", "vertexClusterCandidateSize", true, "The limitation of the number of candidate clusters");
+		  OPTIONS.addOption("fb", "boundaryFactor", true, "The factor for boundary edges");
+	  }
 	
 
 	private static void run(CommandLine cmd) throws InstantiationException, IllegalAccessException, ClassNotFoundException {

@@ -26,6 +26,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
     private int vertexMaxClusterCount;
     private int vertexMaxCandidateClusterCount;
     private int iterationLimitation;
+    private double boundaryFactor;
 
     /* the raw graph data */
     private Graph graphData;
@@ -47,6 +48,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
         this.vertexMaxClusterCount = 5;
         this.vertexMaxCandidateClusterCount = 5;
         this.iterationLimitation = 20;
+        this.boundaryFactor = 0;
 
         if(cmd.hasOption("iter")) {
             this.iterationLimitation = Integer.valueOf(cmd.getOptionValue("iter"));
@@ -62,6 +64,10 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
         if(cmd.hasOption("vccSize")) {
             this.vertexMaxCandidateClusterCount = Integer.valueOf(cmd.getOptionValue("vccSize"));
+        }
+
+        if(cmd.hasOption("fb")) {
+            this.boundaryFactor = Double.valueOf(cmd.getOptionValue("fb"));
         }
 
         computeSemiClusters();
@@ -231,7 +237,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
     }
 
     public double semiClusterScoreCalcuation(SemiClusterInfo message) {
-        double iC = 0.0, bC = 0.0, fB = 0.0, sC = 0.0;
+        double iC = 0.0, bC = 0.0, fB = this.boundaryFactor, sC = 0.0;
         int vC = 0, eC = 0;
         vC = message.size();
         for (Integer vid : message.getVertexList()) {
