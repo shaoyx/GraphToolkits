@@ -93,7 +93,8 @@ public class SemiClusterDetails implements Comparable<SemiClusterDetails>{
 
   @Override
   public int compareTo(SemiClusterDetails sc) {
-//    return (this.getSemiClusterId().compareTo(sc.getSemiClusterId()));
+    if(this.getSemiClusterId().equals(sc.getSemiClusterId()))
+      return 0;
     return (this.getSemiClusterScore() == sc.getSemiClusterScore() ? 0
         : this.getSemiClusterScore() < sc.getSemiClusterScore() ? -1 : 1);
   }

@@ -159,12 +159,10 @@ public class SemiClusterInfo implements Comparable<SemiClusterInfo> {
 
   @Override
   public int compareTo(SemiClusterInfo m) {
-//    return (this.getSemiClusterId().compareTo(m.getSemiClusterId()));
+      if(this.getSemiClusterId().equals(m.getSemiClusterId()))
+          return 0;
     return (this.getScore() == m.getScore() ? 0
             : this.getScore() < m.getScore() ? -1 : 1);
   }
 
-  public boolean checkConnectivity(Graph graphData){
-   return false;
-  }
 }
