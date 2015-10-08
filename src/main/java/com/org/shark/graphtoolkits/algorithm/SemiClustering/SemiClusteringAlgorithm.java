@@ -70,6 +70,12 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             this.boundaryFactor = Double.valueOf(cmd.getOptionValue("fb"));
         }
 
+        System.out.println("iter="+this.iterationLimitation+
+                "\ncSize="+this.semiClusterMaximumVertexCount +
+                "\nvcSize="+this.vertexMaxClusterCount+
+                "\nvccSize="+this.vertexMaxCandidateClusterCount+
+                "\nboundaryFactor="+this.boundaryFactor);
+
         computeSemiClusters();
 
         saveResults(gPath+".clusters");
@@ -149,12 +155,11 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                     if (!msg.contains(vid)
                             && msg.size() < semiClusterMaximumVertexCount
                             && connectivityValidation(vid, msg.getVertexList())) { //check connectivity
+
                         SemiClusterInfo msgNew = msg.copy();
                         msgNew.addVertex(vid);
-                        msgNew.setSemiClusterId("C"
-                                + createNewSemiClusterName(msgNew.getVertexList()));
+                        msgNew.setSemiClusterId("C" + createNewSemiClusterName(msgNew.getVertexList()));
                         msgNew.setScore(semiClusterScoreCalcuation(msgNew));
-
                         candidates.add(msgNew);
                     }
                 }
@@ -184,9 +189,8 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                     System.out.println("update semiCluster: Vid=" + vid + " SemiClusterInfo: "+ msg.toString());
                 }
                 SemiClusterInfo newCluster = msg.copy();
-                newCluster.addVertex(vid);
-                newCluster.setSemiClusterId("C"
-                        + createNewSemiClusterName(newCluster.getVertexList()));
+//                newCluster.addVertex(vid);
+                newCluster.setSemiClusterId("C" + createNewSemiClusterName(newCluster.getVertexList()));
                 newCluster.setScore(msg.getScore());
                 clusters.add(newCluster);
             }
@@ -203,11 +207,11 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
         return true;
     }
 
+    // common functions
     private Set<SemiClusterInfo> cleanNewClusters(Set<SemiClusterInfo> clusters, int limitation) {
         int clusterCountToBeRemoved = 0;
         NavigableSet<SemiClusterInfo> setSort = new TreeSet<SemiClusterInfo>(
                 new Comparator<SemiClusterInfo>() {
-
                     @Override
                     public int compare(SemiClusterInfo o1, SemiClusterInfo o2) {
                         return (o1.getScore() == o2.getScore() ? 0
@@ -254,6 +258,8 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                     sb.append(scd.getSemiClusterId());
                     sb.append(" ");
                     sb.append(scd.getVertexList());
+                    sb.append(" ");
+                    sb.append(scd.getScore());
                     sb.append("\n");
 
                     fwr.write(sb.toString());
