@@ -76,6 +76,15 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 "\nvccSize="+this.vertexMaxCandidateClusterCount+
                 "\nboundaryFactor="+this.boundaryFactor);
 
+
+//        Set<SemiClusterInfo> sets = new TreeSet<SemiClusterInfo>();
+//        SemiClusterInfo scInfo1 = new SemiClusterInfo();
+//        scInfo1.setSemiClusterId("C1");
+//        System.out.println(sets.add(scInfo1));
+//        SemiClusterInfo scInfo2 = new SemiClusterInfo();
+//        scInfo2.setSemiClusterId("C1");
+//        System.out.println(sets.add(scInfo2));
+
         computeSemiClusters();
 
         saveResults(gPath + ".clusters");
@@ -181,10 +190,10 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
             // Update candidates
             Set<SemiClusterInfo> clusters = curSCVertex.getVertexClusterContainThis();
-            System.out.println("Update clusters: ");
-            for(SemiClusterInfo info : clusters) {
-                System.out.println("before="+info);
-            }
+//            System.out.println("Update clusters: ");
+//            for(SemiClusterInfo info : clusters) {
+//                System.out.println("before="+info);
+//            }
 //            System.out.println("clusters size="+clusters.size());
             bestCandidates = candidates.descendingIterator();
             while(bestCandidates.hasNext()) {
@@ -197,20 +206,20 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 hasUpdated = true;
                 SemiClusterInfo newCluster = msg.copy();
 //                newCluster.addVertex(vid);
-                newCluster.setSemiClusterId("C" + createNewSemiClusterName(newCluster.getVertexList()));
+                newCluster.setSemiClusterId(msg.getSemiClusterId()); //"C" + createNewSemiClusterName(newCluster.getVertexList()));
                 newCluster.setScore(msg.getScore());
                 clusters.add(newCluster);
             }
 
-            for(SemiClusterInfo info : clusters) {
-                System.out.println("mid="+info);
-            }
+//            for(SemiClusterInfo info : clusters) {
+//                System.out.println("mid="+info);
+//            }
 
             clusters = cleanNewClusters(clusters, vertexMaxClusterCount);
-            for(SemiClusterInfo info : clusters) {
-                System.out.println("after="+info);
-            }
-            System.out.println("after clean clusters size="+clusters.size());
+//            for(SemiClusterInfo info : clusters) {
+//                System.out.println("after="+info);
+//            }
+//            System.out.println("after clean clusters size="+clusters.size());
             curSCVertex.setVertexClusterContainThis(clusters);
         }
         //iterative
