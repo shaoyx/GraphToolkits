@@ -18,6 +18,8 @@
 
 package com.org.shark.graphtoolkits.algorithm.SemiClustering;
 
+import com.org.shark.graphtoolkits.graph.Graph;
+
 import java.util.*;
 
 /**
@@ -111,8 +113,6 @@ public class SemiClusterInfo implements Comparable<SemiClusterInfo> {
     this.semiClusterContainThis = setSort;
   }
 
-
-
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -157,11 +157,14 @@ public class SemiClusterInfo implements Comparable<SemiClusterInfo> {
     return scInfo;
   }
 
-
   @Override
   public int compareTo(SemiClusterInfo m) {
 //    return (this.getSemiClusterId().compareTo(m.getSemiClusterId()));
     return (this.getScore() == m.getScore() ? 0
             : this.getScore() < m.getScore() ? -1 : 1);
+  }
+
+  public boolean checkConnectivity(Graph graphData){
+   return false;
   }
 }

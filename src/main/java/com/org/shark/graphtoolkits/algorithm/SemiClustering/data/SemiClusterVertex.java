@@ -4,6 +4,8 @@ import com.org.shark.graphtoolkits.algorithm.SemiClustering.SemiClusterInfo;
 import com.org.shark.graphtoolkits.graph.Vertex;
 
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by yxshao on 10/7/15.
@@ -11,31 +13,25 @@ import java.util.ArrayList;
 public class SemiClusterVertex extends Vertex {
 
 //    SemiClusterInfo vertexClusterInfo;
-    ArrayList<SemiClusterInfo> vertexClusterContainThis;
+    Set<SemiClusterInfo> vertexClusterContainThis;
     ArrayList<SemiClusterInfo> preCandidateSemiClusters;
     ArrayList<SemiClusterInfo> curCandidateSemiClusters;
 
     public SemiClusterVertex() {
         super();
+        vertexClusterContainThis = new TreeSet<SemiClusterInfo>();
     }
 
     public SemiClusterVertex(int vid, double weight) {
         super(vid, weight);
+        vertexClusterContainThis = new TreeSet<SemiClusterInfo>();
     }
 
-//    public SemiClusterInfo getVertexClusterInfo() {
-//        return vertexClusterInfo;
-//    }
-//
-//    public void setVertexClusterInfo(SemiClusterInfo vcInfo) {
-//        vertexClusterInfo = vcInfo;
-//    }
-
-    public ArrayList<SemiClusterInfo> getVertexClusterContainThis() {
+    public Set<SemiClusterInfo> getVertexClusterContainThis() {
         return vertexClusterContainThis;
     }
 
-    public void setVertexClusterContainThis(ArrayList<SemiClusterInfo> vcInfo) {
+    public void setVertexClusterContainThis(Set<SemiClusterInfo> vcInfo) {
         vertexClusterContainThis = vcInfo;
     }
     public ArrayList<SemiClusterInfo> getPreCandidateSemiClusters() {

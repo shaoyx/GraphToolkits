@@ -107,18 +107,15 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             ArrayList<SemiClusterInfo> scInfoArrayList = new ArrayList<SemiClusterInfo>();
             scInfoArrayList.add(initialClusters);
 
-            ArrayList<SemiClusterInfo> scList = new ArrayList<SemiClusterInfo>();
+            Set<SemiClusterInfo> scList = new TreeSet<SemiClusterInfo>();
             SemiClusterInfo initialClusters2 = new SemiClusterInfo();
             initialClusters2.setSemiClusterId(newClusterName);
             initialClusters2.addVertexList(lV);
             initialClusters2.setScore(1);
             scList.add(initialClusters2);
-//            SemiClusterInfo vertexValue = new SemiClusterInfo();
-//            vertexValue.setSemiClusterContainThis(scList);
 
             scVertex.setVid(vid);
             scVertex.setPreCandidateSemiClusters(scInfoArrayList);
-//            scVertex.setVertexClusterInfo(vertexValue);
             scVertex.setVertexClusterContainThis(scList);
 
             if(vid == 136176934) {
@@ -138,7 +135,6 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
             Vertex curV = graphData.getVertexById(vid);
             ArrayList<Edge> curVNbrs = graphData.getNeighbors(vid);
-//            System.out.println(semiClusterGraph+" ");
             SemiClusterVertex curSCVertex = semiClusterGraph.getSemiClusterVertex(vid);
 
             TreeSet<SemiClusterInfo> candidates = new TreeSet<SemiClusterInfo>();
@@ -151,7 +147,8 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                     candidates.add(msg);
 
                     if (!msg.contains(vid)
-                            && msg.size() < semiClusterMaximumVertexCount) {
+                            && msg.size() < semiClusterMaximumVertexCount
+                            && connectivityValidation(vid, msg.getVertexList())) { //check connectivity
                         SemiClusterInfo msgNew = msg.copy();
                         msgNew.addVertex(vid);
                         msgNew.setSemiClusterId("C"
@@ -176,22 +173,16 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             curSCVertex.setCurCandidateSemiClusters(curSemiClusterInfo);
 
             // Update candidates
-//            SemiClusterInfo value = curSCVertex.getVertexClusterInfo();
-            ArrayList<SemiClusterInfo> clusters = curSCVertex.getVertexClusterContainThis();
+            Set<SemiClusterInfo> clusters = curSCVertex.getVertexClusterContainThis();
+//            System.out.println("clusters size="+clusters.size());
             bestCandidates = candidates.descendingIterator();
-//            Set<SemiClusterDetails> clusters = value.getSemiClusterContainThis();
             while(bestCandidates.hasNext()) {
                 SemiClusterInfo msg = bestCandidates.next();
-                if(!msg.contains(vid)) continue;;
+                if(!msg.contains(vid))
+                    continue;
                 if(vid == 136176934) {
                     System.out.println("update semiCluster: Vid=" + vid + " SemiClusterInfo: "+ msg.toString());
                 }
-//                if (clusters.size() > vertexMaxClusterCount) {
-//                    break;
-//                } else {
-//                    clusters.add(new SemiClusterDetails(msg.getSemiClusterId(), msg
-//                            .getScore()));
-//                }
                 SemiClusterInfo newCluster = msg.copy();
                 newCluster.addVertex(vid);
                 newCluster.setSemiClusterId("C"
@@ -199,19 +190,10 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 newCluster.setScore(msg.getScore());
                 clusters.add(newCluster);
             }
-//            System.out.println("output best candidate !!");
-//            value.setClusters(clusters, vertexMaxClusterCount);
-//            curSCVertex.setVertexClusterInfo(value);
-            Collections.sort(clusters);
-//            for(SemiClusterInfo scInfo : clusters) {
-//                System.out.println(scInfo);
-//            }
-            if(clusters.size() <= vertexMaxClusterCount)
-                curSCVertex.setVertexClusterContainThis(clusters);
-            else {
-                int startIdx = clusters.size() - vertexMaxClusterCount;
-                curSCVertex.setVertexClusterContainThis(new ArrayList<SemiClusterInfo>(clusters.subList(startIdx, clusters.size())));
-            }
+
+            clusters = cleanNewClusters(clusters, vertexMaxClusterCount);
+//            System.out.println("after clean clusters size="+clusters.size());
+            curSCVertex.setVertexClusterContainThis(clusters);
         }
         //iterative
         for(Integer vid : this.graphData.getVertexSet().keySet()) {
@@ -221,17 +203,49 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
         return true;
     }
 
+    private Set<SemiClusterInfo> cleanNewClusters(Set<SemiClusterInfo> clusters, int limitation) {
+        int clusterCountToBeRemoved = 0;
+        NavigableSet<SemiClusterInfo> setSort = new TreeSet<SemiClusterInfo>(
+                new Comparator<SemiClusterInfo>() {
+
+                    @Override
+                    public int compare(SemiClusterInfo o1, SemiClusterInfo o2) {
+                        return (o1.getScore() == o2.getScore() ? 0
+                                : o1.getScore() < o2.getScore() ? -1 : 1);
+                    }
+                });
+        setSort.addAll(clusters);
+        clusterCountToBeRemoved = setSort.size() - limitation;
+        Iterator<SemiClusterInfo> itr = setSort.descendingIterator();
+        while (clusterCountToBeRemoved > 0) {
+            itr.next();
+            itr.remove();
+            clusterCountToBeRemoved--;
+        }
+        return setSort;
+    }
+
+    private boolean connectivityValidation(int vid, List<Integer> candidateCluster) {
+        ArrayList<Edge>  nbrs = graphData.getNeighbors(vid);
+        HashSet<Integer> tSets = new HashSet<Integer>();
+        for(Edge e : nbrs) {
+            tSets.add(e.getId());
+        }
+        for(int cv : candidateCluster) {
+            if(tSets.contains(cv)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void saveResults(String savePath) {
         try{
             FileOutputStream fout = new FileOutputStream(savePath);
             BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
             for(int vid : graphData.getVertexSet().keySet()) {
                 SemiClusterVertex scVertex = semiClusterGraph.getSemiClusterVertex(vid);
-//                SemiClusterInfo scInfo = scVertex.getVertexClusterInfo();
-                ArrayList<SemiClusterInfo> scInfos = scVertex.getVertexClusterContainThis();
-//                Set<SemiClusterDetails> scContainVid = scInfo.getSemiClusterContainThis();
-
-//                for(SemiClusterDetails scd : scContainVid) {
+                Set<SemiClusterInfo> scInfos = scVertex.getVertexClusterContainThis();
                 for(SemiClusterInfo scd : scInfos) {
 
                     StringBuffer sb = new StringBuffer();
@@ -277,7 +291,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             for(Edge e : vnbrs) {
                 int tid = e.getId();
                 double weight = e.getWeight();
-                eC++;
+                eC += e.getWeight();
                 if (message.contains(tid) && weight > 0.0) { //TODO: fake weight justification
                     iC = iC + weight;
                 } else if (weight > 0.0) {
@@ -286,7 +300,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             }
         }
         if (vC > 1)
-            sC = ((iC - fB * bC) / ((vC * (vC - 1)) / 2));// / eC;
+            sC = ((iC - fB * bC) / ((vC * (vC - 1)) / 2)) / eC;
         return sC;
     }
 }
