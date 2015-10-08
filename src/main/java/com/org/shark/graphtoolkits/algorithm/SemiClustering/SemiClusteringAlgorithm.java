@@ -300,7 +300,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             }
         }
         if (vC > 1)
-            sC = ((iC - fB * bC) / ((vC * (vC - 1)) / 2)) / eC;
+            sC = ((iC - fB * bC) / ((vC * (vC - 1)) / 2));// / eC;
         return sC;
     }
 }
