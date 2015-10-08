@@ -181,6 +181,10 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
             // Update candidates
             Set<SemiClusterInfo> clusters = curSCVertex.getVertexClusterContainThis();
+            System.out.println("Update clusters: ");
+            for(SemiClusterInfo info : clusters) {
+                System.out.println("before="+info);
+            }
 //            System.out.println("clusters size="+clusters.size());
             bestCandidates = candidates.descendingIterator();
             while(bestCandidates.hasNext()) {
@@ -198,9 +202,8 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 clusters.add(newCluster);
             }
 
-            System.out.println("Update clusters: ");
             for(SemiClusterInfo info : clusters) {
-                System.out.println("before="+info);
+                System.out.println("mid="+info);
             }
 
             clusters = cleanNewClusters(clusters, vertexMaxClusterCount);
