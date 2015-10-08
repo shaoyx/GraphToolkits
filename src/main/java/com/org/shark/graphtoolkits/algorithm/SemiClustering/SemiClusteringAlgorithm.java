@@ -108,7 +108,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             SemiClusterInfo initialClusters = new SemiClusterInfo();
             initialClusters.setSemiClusterId(newClusterName);
             initialClusters.addVertexList(lV);
-            initialClusters.setScore(1);
+            initialClusters.setScore(0);
 
             ArrayList<SemiClusterInfo> scInfoArrayList = new ArrayList<SemiClusterInfo>();
             scInfoArrayList.add(initialClusters);
@@ -117,7 +117,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             SemiClusterInfo initialClusters2 = new SemiClusterInfo();
             initialClusters2.setSemiClusterId(newClusterName);
             initialClusters2.addVertexList(lV);
-            initialClusters2.setScore(1);
+            initialClusters2.setScore(0);
             scList.add(initialClusters2);
 
             scVertex.setVid(vid);
