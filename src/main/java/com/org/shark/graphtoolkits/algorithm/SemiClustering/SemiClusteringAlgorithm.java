@@ -137,6 +137,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
      * @return true: the cluster is updated; false: the cluster is not updated.
      */
     private boolean updateCluster() {
+        boolean hasUpdated = false;
         for(Integer vid : this.graphData.getVertexSet().keySet()) {
 
             Vertex curV = graphData.getVertexById(vid);
@@ -161,6 +162,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                         msgNew.setSemiClusterId("C" + createNewSemiClusterName(msgNew.getVertexList()));
                         msgNew.setScore(semiClusterScoreCalcuation(msgNew));
                         candidates.add(msgNew);
+                        hasUpdated = true;
                     }
                 }
 
@@ -188,6 +190,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 if(vid == 136176934) {
                     System.out.println("update semiCluster: Vid=" + vid + " SemiClusterInfo: "+ msg.toString());
                 }
+                hasUpdated = true;
                 SemiClusterInfo newCluster = msg.copy();
 //                newCluster.addVertex(vid);
                 newCluster.setSemiClusterId("C" + createNewSemiClusterName(newCluster.getVertexList()));
@@ -212,7 +215,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             SemiClusterVertex curSCVertex = semiClusterGraph.getSemiClusterVertex(vid);
             curSCVertex.setPreCandidateSemiClusters(curSCVertex.getCurCandidateSemiClusters());
         }
-        return true;
+        return hasUpdated;
     }
 
     // common functions
