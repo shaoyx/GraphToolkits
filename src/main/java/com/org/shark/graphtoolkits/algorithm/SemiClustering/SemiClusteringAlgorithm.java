@@ -304,10 +304,12 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
         for (Integer vid : message.getVertexList()) {
 
             ArrayList<Edge> vnbrs = graphData.getNeighbors(vid);
+            Vertex curVertex = graphData.getVertexSet().get(vid);
 
             for(Edge e : vnbrs) {
                 int tid = e.getId();
-                double weight = e.getWeight();
+                Vertex targetVertex = graphData.getVertexSet().get(tid);
+                double weight = e.getWeight() / Math.max(curVertex.getWeight(), targetVertex.getWeight());
                 eC += e.getWeight();
                 if (message.contains(tid) && weight > 0.0) { //TODO: fake weight justification
                     iC = iC + weight;
