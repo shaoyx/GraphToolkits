@@ -61,6 +61,7 @@ public class Closeness implements GenericGraphTool {
         while (clusterCountToBeRemoved > 0) {
             Vertex removedV = itr.next();
 //            System.out.println("remove "+removedV.getVid()+" "+vertexIdSets.remove(removedV.getVid()));
+            vertexIdSets.remove(removedV.getVid());
             itr.remove();
             clusterCountToBeRemoved--;
         }
