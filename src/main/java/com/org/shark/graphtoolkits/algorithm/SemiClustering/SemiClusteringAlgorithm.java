@@ -76,7 +76,6 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 "\nvccSize="+this.vertexMaxCandidateClusterCount+
                 "\nboundaryFactor="+this.boundaryFactor);
 
-
 //        Set<SemiClusterInfo> sets = new TreeSet<SemiClusterInfo>();
 //        SemiClusterInfo scInfo1 = new SemiClusterInfo();
 //        scInfo1.setSemiClusterId("C1");
@@ -169,7 +168,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 ArrayList<SemiClusterInfo> preSemiClusterInfo = nbrSCVertex.getPreCandidateSemiClusters();
 
                 for (SemiClusterInfo msg : preSemiClusterInfo) {
-                    System.out.println("add msg=" + msg);
+//                    System.out.println("add msg=" + msg);
                     candidates.add(msg);
 
                     if (!msg.contains(vid)
@@ -179,23 +178,23 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                         msgNew.addVertex(vid);
                         msgNew.setSemiClusterId("C" + createNewSemiClusterName(msgNew.getVertexList()));
                         msgNew.setScore(semiClusterScoreCalcuation(msgNew));
-                        System.out.println("add msgNew=" + msgNew);
+//                        System.out.println("add msgNew=" + msgNew);
                         candidates.add(msgNew);
                         hasUpdated = true;
                     }
                 }
             }
 
-            String preNamce = "";
-            for(SemiClusterInfo scInfo : candidates) {
-                System.out.println(scInfo);
-                if(scInfo.getSemiClusterId().equals(preNamce)) {
-                    System.err.println("out put candidates: Error");
-                    System.exit(0);
-                }
-                preNamce = scInfo.getSemiClusterId();
-            }
-            System.out.println();
+//            String preNamce = "";
+//            for(SemiClusterInfo scInfo : candidates) {
+//                System.out.println(scInfo);
+//                if(scInfo.getSemiClusterId().equals(preNamce)) {
+//                    System.err.println("out put candidates: Error");
+//                    System.exit(0);
+//                }
+//                preNamce = scInfo.getSemiClusterId();
+//            }
+//            System.out.println();
 
             Iterator<SemiClusterInfo> bestCandidates = candidates.iterator(); //candidates.descendingIterator();
             int count = 0;
@@ -212,16 +211,16 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             Set<SemiClusterInfo> clusters = curSCVertex.getVertexClusterContainThis();
 //            TreeSet<SemiClusterInfo> clusterCandidates = new TreeSet<SemiClusterInfo>();
 //            clusterCandidates.addAll(clusters);
-            System.out.println("Update clusters: "+clusters.getClass());
-            String name = "";
-            for(SemiClusterInfo info : clusters) {
-                System.out.println("before="+info);
-                if(info.getSemiClusterId().equals(name)) {
-                    System.err.println("before Error");
-                    System.exit(0);
-                }
-                name = info.getSemiClusterId();
-            }
+//            System.out.println("Update clusters: "+clusters.getClass());
+//            String name = "";
+//            for(SemiClusterInfo info : clusters) {
+//                System.out.println("before="+info);
+//                if(info.getSemiClusterId().equals(name)) {
+//                    System.err.println("before Error");
+//                    System.exit(0);
+//                }
+//                name = info.getSemiClusterId();
+//            }
             bestCandidates = candidates.iterator(); //candidates.descendingIterator();
             while(bestCandidates.hasNext()) {
                 SemiClusterInfo msg = bestCandidates.next();
@@ -235,19 +234,19 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 //                newCluster.addVertex(vid);
                 newCluster.setSemiClusterId(msg.getSemiClusterId()); //"C" + createNewSemiClusterName(newCluster.getVertexList()));
                 newCluster.setScore(msg.getScore());
-                System.out.println("add new: " + newCluster +" result="+clusters.add(newCluster));
+//                System.out.println("add new: " + newCluster +" result="+clusters.add(newCluster));
 //                clusterCandidates.add(newCluster);
 //                 clusters.add(newCluster);
             }
-            name = "";
-            for(SemiClusterInfo info : clusters) {
-                System.out.println("mid="+info);
-                if(info.getSemiClusterId().equals(name)) {
-                    System.err.println("mid Error");
-                    System.exit(0);
-                }
-                name = info.getSemiClusterId();
-            }
+//            name = "";
+//            for(SemiClusterInfo info : clusters) {
+//                System.out.println("mid="+info);
+//                if(info.getSemiClusterId().equals(name)) {
+//                    System.err.println("mid Error");
+//                    System.exit(0);
+//                }
+//                name = info.getSemiClusterId();
+//            }
 
 //            clusters = cleanNewClusters(clusterCandidates, vertexMaxClusterCount);
             clusters = cleanNewClusters(clusters, vertexMaxClusterCount);
@@ -290,8 +289,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             itr.remove();
             clusterCountToBeRemoved--;
         }
-        HashSet<SemiClusterInfo> res = new HashSet<SemiClusterInfo>(setSort);
-        return res;
+        return new HashSet<SemiClusterInfo>(setSort);
     }
 
     private boolean connectivityValidation(int vid, List<Integer> candidateCluster) {
