@@ -207,8 +207,8 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             curSCVertex.setCurCandidateSemiClusters(curSemiClusterInfo);
 
             // Update candidates
-            TreeSet<SemiClusterInfo> clusters = curSCVertex.getVertexClusterContainThis();
-            System.out.println("Update clusters: ");
+            Set<SemiClusterInfo> clusters = curSCVertex.getVertexClusterContainThis();
+            System.out.println("Update clusters: "+clusters.getClass());
             String name = "";
 //            for(SemiClusterInfo info : clusters) {
 //                System.out.println("before="+info);

@@ -13,7 +13,7 @@ import java.util.TreeSet;
 public class SemiClusterVertex extends Vertex {
 
 //    SemiClusterInfo vertexClusterInfo;
-    TreeSet<SemiClusterInfo> vertexClusterContainThis;
+    Set<SemiClusterInfo> vertexClusterContainThis;
     ArrayList<SemiClusterInfo> preCandidateSemiClusters;
     ArrayList<SemiClusterInfo> curCandidateSemiClusters;
 
@@ -27,11 +27,11 @@ public class SemiClusterVertex extends Vertex {
         vertexClusterContainThis = new TreeSet<SemiClusterInfo>();
     }
 
-    public TreeSet<SemiClusterInfo> getVertexClusterContainThis() {
+    public Set<SemiClusterInfo> getVertexClusterContainThis() {
         return vertexClusterContainThis;
     }
 
-    public void setVertexClusterContainThis(TreeSet<SemiClusterInfo> vcInfo) {
+    public void setVertexClusterContainThis(Set<SemiClusterInfo> vcInfo) {
         vertexClusterContainThis = vcInfo;
     }
     public ArrayList<SemiClusterInfo> getPreCandidateSemiClusters() {
