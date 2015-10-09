@@ -313,7 +313,9 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
     public void saveResults(String savePath) {
         try{
             FileOutputStream fout = new FileOutputStream(savePath);
+            FileOutputStream fout2 = new FileOutputStream(savePath+".merge");
             BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
+            BufferedWriter fwr2 = new BufferedWriter(new OutputStreamWriter(fout2));
             for(int vid : graphData.getVertexSet().keySet()) {
                 SemiClusterVertex scVertex = semiClusterGraph.getSemiClusterVertex(vid);
                 Set<SemiClusterInfo> scInfos = scVertex.getVertexClusterContainThis();
@@ -326,7 +328,11 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                             }
                         });
                 setSort.addAll(scInfos);
+                HashSet<Integer> nbrs = new HashSet<Integer>();
                 for(SemiClusterInfo scd : setSort) {
+                    for(Integer tid : scd.getVertexList()) {
+                        nbrs.add(tid);
+                    }
 
                     StringBuffer sb = new StringBuffer();
                     sb.append(vid);
@@ -340,9 +346,17 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
                     fwr.write(sb.toString());
                 }
+                StringBuilder sb2 = new StringBuilder();
+                for(int tid : nbrs) {
+                    sb2.append(tid+" ");
+                }
+                sb2.append("\n");
+                fwr2.write(sb2.toString());
             }
             fwr.flush();
             fwr.close();
+            fwr2.flush();
+            fwr2.close();
         }catch (Exception e){
             e.printStackTrace();
         }
