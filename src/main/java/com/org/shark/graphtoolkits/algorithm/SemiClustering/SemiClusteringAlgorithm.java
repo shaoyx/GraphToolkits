@@ -233,9 +233,9 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 //                newCluster.addVertex(vid);
                 newCluster.setSemiClusterId(msg.getSemiClusterId()); //"C" + createNewSemiClusterName(newCluster.getVertexList()));
                 newCluster.setScore(msg.getScore());
-                System.out.println("add new: " + newCluster);
+                System.out.println("add new: " + newCluster +" result="+clusters.add(newCluster));
 //                clusterCandidates.add(newCluster);
-                clusters.add(newCluster);
+                 clusters.add(newCluster);
             }
             name = "";
             for(SemiClusterInfo info : clusters) {
