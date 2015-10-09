@@ -78,17 +78,21 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
 //        Set<SemiClusterInfo> sets = new TreeSet<SemiClusterInfo>();
 //        SemiClusterInfo scInfo1 = new SemiClusterInfo();
-//        scInfo1.setSemiClusterId("C1");
+//        scInfo1.setSemiClusterId("C2");
 //        scInfo1.setScore(1.0);
 //        System.out.println(sets.add(scInfo1));
 ////        scInfo1.setSemiClusterId("C2");
 //
-//        SemiClusterInfo scInfo2 = scInfo1.copy();
-//        scInfo2.setSemiClusterId("C1");
-//        scInfo2.setScore(2.0);
-//        System.out.println("scInfo2="+scInfo2);
-//        System.out.println(sets.add(scInfo2));
-//
+//        for(int i = 0; i < 10; i ++) {
+//            SemiClusterInfo scInfo2 = scInfo1.copy();
+//            scInfo2.setSemiClusterId("C1");
+//            if(i % 2 == 0)
+//                scInfo2.setScore(2.0);
+//            else {
+//                scInfo2.setScore(1.9999999999999999);
+//            }
+//            System.out.println(sets.add(scInfo2));
+//        }
 //        for(SemiClusterInfo info : sets) {
 //            System.out.println(info);
 //        }
@@ -236,7 +240,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 newCluster.setScore(msg.getScore());
 //                System.out.println("add new: " + newCluster +" result="+clusters.add(newCluster));
 //                clusterCandidates.add(newCluster);
-//                 clusters.add(newCluster);
+                 clusters.add(newCluster);
             }
 //            name = "";
 //            for(SemiClusterInfo info : clusters) {
