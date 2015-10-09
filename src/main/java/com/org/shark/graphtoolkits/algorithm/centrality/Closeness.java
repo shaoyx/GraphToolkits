@@ -49,12 +49,14 @@ public class Closeness implements GenericGraphTool {
         setSort.addAll(centralitySet);
         clusterCountToBeRemoved = setSort.size() - 10;
         Iterator<Vertex> itr = setSort.descendingIterator();
+        System.out.println("Remove size="+clusterCountToBeRemoved);
         while (clusterCountToBeRemoved > 0) {
             Vertex removedV = itr.next();
-            vertexIdSets.remove(removedV.getVid());
+            System.out.println("remove "+removedV.getVid()+" "+vertexIdSets.remove(removedV.getVid()));
             itr.remove();
             clusterCountToBeRemoved--;
         }
+        System.out.println(vertexIdSets);
     }
 
     public double computeSingleVertex(int vid, HashSet<Integer> vertexIdSets) {
