@@ -162,7 +162,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             ArrayList<Edge> curVNbrs = graphData.getNeighbors(vid);
             SemiClusterVertex curSCVertex = semiClusterGraph.getSemiClusterVertex(vid);
 
-            TreeSet<SemiClusterInfo> candidates = new TreeSet<SemiClusterInfo>();
+            HashSet<SemiClusterInfo> candidates = new HashSet<SemiClusterInfo>();
 
             for(Edge e : curVNbrs) {
                 SemiClusterVertex nbrSCVertex = semiClusterGraph.getSemiClusterVertex(e.getId());
@@ -197,7 +197,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             }
             System.out.println();
 
-            Iterator<SemiClusterInfo> bestCandidates = candidates.descendingIterator();
+            Iterator<SemiClusterInfo> bestCandidates = candidates.iterator(); //candidates.descendingIterator();
             int count = 0;
 
             ArrayList<SemiClusterInfo> curSemiClusterInfo = new ArrayList<SemiClusterInfo>();
@@ -222,7 +222,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 }
                 name = info.getSemiClusterId();
             }
-            bestCandidates = candidates.descendingIterator();
+            bestCandidates = candidates.iterator(); //candidates.descendingIterator();
             while(bestCandidates.hasNext()) {
                 SemiClusterInfo msg = bestCandidates.next();
                 if(!msg.contains(vid))
