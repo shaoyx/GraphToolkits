@@ -1,26 +1,44 @@
 package com.org.shark.graphtoolkits.algorithm.centrality;
 
+import com.org.shark.graphtoolkits.GenericGraphTool;
 import com.org.shark.graphtoolkits.algorithm.SemiClustering.SemiClusterInfo;
+import com.org.shark.graphtoolkits.algorithm.SemiClustering.data.SemiClusterVertex;
 import com.org.shark.graphtoolkits.graph.Edge;
 import com.org.shark.graphtoolkits.graph.Graph;
 import com.org.shark.graphtoolkits.graph.Vertex;
+import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
+import org.apache.commons.cli.CommandLine;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by yxshao on 10/9/15.
  */
-public class Closeness {
+@GraphAnalyticTool(
+        name = "Closeness",
+        description = "Compute cloessness"
+)
+public class Closeness implements GenericGraphTool {
+    protected static final Pattern SEPERATOR =  Pattern.compile("[\t ]");
 
     private Graph graphData;
 
     public Closeness() {}
 
     public void computeClosenessForVertexSet(HashSet<Integer> vertexIdSets) {
-        TreeSet<Vertex> centralitySet = new TreeSet<Vertex>(
+
+        if(vertexIdSets.size() <= 10) return;
+
+        TreeSet<Vertex> centralitySet = new TreeSet<Vertex>();
+        for(int vid : vertexIdSets) {
+            double centrality = computeSingleVertex(vid, vertexIdSets);
+            centralitySet.add(new Vertex(vid, centrality));
+        }
+
+        int clusterCountToBeRemoved = 0;
+        NavigableSet<Vertex> setSort = new TreeSet<Vertex>(
                 new Comparator<Vertex>() {
                     @Override
                     public int compare(Vertex o1, Vertex o2) {
@@ -28,9 +46,14 @@ public class Closeness {
                                 : o1.getWeight() > o2.getWeight() ? -1 : 1);
                     }
                 });
-        for(int vid : vertexIdSets) {
-            double centrality = computeSingleVertex(vid, vertexIdSets);
-            centralitySet.add(new Vertex(vid, centrality));
+        setSort.addAll(centralitySet);
+        clusterCountToBeRemoved = setSort.size() - 10;
+        Iterator<Vertex> itr = setSort.descendingIterator();
+        while (clusterCountToBeRemoved > 0) {
+            Vertex removedV = itr.next();
+            vertexIdSets.remove(removedV.getVid());
+            itr.remove();
+            clusterCountToBeRemoved--;
         }
     }
 
@@ -66,5 +89,62 @@ public class Closeness {
             }
         }
         return result / (vertexIdSets.size()  - 1);
+    }
+
+    @Override
+    public void run(CommandLine cmd) {
+        String gPath;
+        gPath = cmd.getOptionValue("i");
+        double th = 3.0;
+        if(cmd.hasOption("th")) {
+            th = Double.valueOf(cmd.getOptionValue("th"));
+        }
+        graphData = new Graph(gPath, th);
+
+        loadGroupAndRefine(cmd.getOptionValue("gf"));
+    }
+
+    @Override
+    public boolean verifyParameters(CommandLine cmd) {
+        return (cmd.hasOption("gf"));
+    }
+
+    private void loadGroupAndRefine(String gpath) {
+        try {
+            FileInputStream fin = new FileInputStream(gpath);
+            BufferedReader fbr = new BufferedReader(new InputStreamReader(fin));
+            FileOutputStream fout = new FileOutputStream(gpath + ".clean");
+            BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
+
+            String line;
+            while((line = fbr.readLine()) != null) {
+                if (line.startsWith("#")) continue;
+                String[] values = SEPERATOR.split(line);
+
+                String vid = values[0];
+                HashSet<Integer> gList = new HashSet<Integer>();
+                for (int i = 1; i < values.length; i++) {
+                    int sv = Integer.valueOf(values[i]);
+                    gList.add(sv);
+                }
+//                System.out.println(vid + " " +gList);
+                this.computeClosenessForVertexSet(gList);
+//                System.out.println(vid + "cleaned: " +gList);
+
+                StringBuilder sb = new StringBuilder();
+                sb.append(vid);
+                for(Integer scd : gList) {
+                    sb.append(" ");
+                    sb.append(scd);
+                }
+                sb.append("\n");
+                fwr.write(sb.toString());
+            }
+            fbr.close();
+            fwr.flush();
+            fwr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

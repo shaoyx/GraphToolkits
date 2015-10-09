@@ -30,6 +30,7 @@ public class GraphTools {
 		  OPTIONS.addOption("vcSize", "vertexClusterSize", true, "The limitation of the number of vertices in a cluster");
 		  OPTIONS.addOption("vccSize", "vertexClusterCandidateSize", true, "The limitation of the number of candidate clusters");
 		  OPTIONS.addOption("fb", "boundaryFactor", true, "The factor for boundary edges");
+		  OPTIONS.addOption("gf", "groupFile", true, "The path of group file");
 	  }
 	
 
