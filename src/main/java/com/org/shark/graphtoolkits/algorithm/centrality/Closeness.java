@@ -29,38 +29,42 @@ public class Closeness implements GenericGraphTool {
 
     public void computeClosenessForVertexSet(HashSet<Integer> vertexIdSets) {
 
-        System.out.println("Size="+vertexIdSets.size());
+//        System.out.println("Size="+vertexIdSets.size());
 
-//        if(vertexIdSets.size() <= 10) return;
+        if(vertexIdSets.size() <= 10) return;
 
         TreeSet<Vertex> centralitySet = new TreeSet<Vertex>();
         for(int vid : vertexIdSets) {
             double centrality = computeSingleVertex(vid, vertexIdSets);
             centralitySet.add(new Vertex(vid, centrality));
         }
-        System.out.println(centralitySet.size());
-        System.out.println("original set size="+centralitySet.size() + ": "+centralitySet);
+//        System.out.println(centralitySet.size());
+//        System.out.println("original set size="+centralitySet.size() + ": "+centralitySet);
         int clusterCountToBeRemoved = 0;
         NavigableSet<Vertex> setSort = new TreeSet<Vertex>(
                 new Comparator<Vertex>() {
                     @Override
                     public int compare(Vertex o1, Vertex o2) {
-                        return (o1.getWeight() == o2.getWeight() ? 0
+                        if(o1.getWeight() == o2.getWeight()) {
+                           return o1.getVid() < o2.getVid() ? -1 : 1;
+                        }
+                        else
+                            return (o1.getWeight() == o2.getWeight() ? 0
                                 : o1.getWeight() > o2.getWeight() ? -1 : 1);
                     }
                 });
         setSort.addAll(centralitySet);
-        System.out.println("set size="+setSort.size() + ": "+setSort);
+//        System.out.println("set size="+setSort.size() + ": "+setSort);
         clusterCountToBeRemoved = setSort.size() - 10;
         Iterator<Vertex> itr = setSort.descendingIterator();
-        System.out.println("Remove size="+clusterCountToBeRemoved);
+//        System.out.println("Remove size="+clusterCountToBeRemoved);
         while (clusterCountToBeRemoved > 0) {
             Vertex removedV = itr.next();
-            System.out.println("remove "+removedV.getVid()+" "+vertexIdSets.remove(removedV.getVid()));
+//            System.out.println("remove "+removedV.getVid()+" "+vertexIdSets.remove(removedV.getVid()));
             itr.remove();
             clusterCountToBeRemoved--;
         }
-        System.out.println(vertexIdSets);
+//        System.out.println(vertexIdSets);
     }
 
     public double computeSingleVertex(int vid, HashSet<Integer> vertexIdSets) {
@@ -83,7 +87,7 @@ public class Closeness implements GenericGraphTool {
 
             for (int idx = 0; idx < nbrs.size(); idx++) {
                 Edge e = nbrs.get(idx);
-
+//                System.out.println("neighbor="+e.getId());
                 //filter by visited or the weight is below threshold
                 if (visited.contains(e.getId()) || !vertexIdSets.contains(e.getId()))
                     continue;
@@ -94,6 +98,7 @@ public class Closeness implements GenericGraphTool {
                 dist.put(e.getId(), distance + 1);
             }
         }
+//        System.out.println(vid+": score="+result);
         return result / (vertexIdSets.size()  - 1);
     }
 
@@ -133,9 +138,9 @@ public class Closeness implements GenericGraphTool {
                     int sv = Integer.valueOf(values[i]);
                     gList.add(sv);
                 }
-                System.out.println(vid + " " +gList);
+//                System.out.println(vid + " " +gList);
                 this.computeClosenessForVertexSet(gList);
-                System.out.println(vid + "cleaned: " +gList);
+//                System.out.println(vid + "cleaned: " +gList);
 
                 StringBuilder sb = new StringBuilder();
                 sb.append(vid);
