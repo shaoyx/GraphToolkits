@@ -28,7 +28,7 @@ import java.util.*;
  * vertex.
  * 
  */
-public class SemiClusterInfo implements Comparable<SemiClusterInfo> {
+public class SemiClusterInfo implements Comparable<SemiClusterInfo>, Comparator<SemiClusterInfo>{
 
   private String semiClusterId = null;
   private double semiClusterScore = 0.0;
@@ -122,7 +122,16 @@ public class SemiClusterInfo implements Comparable<SemiClusterInfo> {
     return result;
   }
 
-  @Override
+    @Override
+    public int compare(SemiClusterInfo o1, SemiClusterInfo o2) {
+        System.out.println("Compare methods: this="+ o1.getSemiClusterId()+" other="+o2.getSemiClusterId());
+        if(o1.getSemiClusterId().equals(o2.getSemiClusterId()))
+            return 0;
+        return (o1.getScore() == o2.getScore() ? 0
+                : o1.getScore() < o2.getScore() ? -1 : 1);
+    }
+
+    @Override
   public boolean equals(Object obj) {
       System.out.println("Equal function");
     if (this == obj)

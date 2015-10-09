@@ -212,14 +212,14 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 //            clusterCandidates.addAll(clusters);
             System.out.println("Update clusters: "+clusters.getClass());
             String name = "";
-//            for(SemiClusterInfo info : clusters) {
-//                System.out.println("before="+info);
-//                if(info.getSemiClusterId().equals(name)) {
-//                    System.err.println("before Error");
-//                    System.exit(0);
-//                }
-//                name = info.getSemiClusterId();
-//            }
+            for(SemiClusterInfo info : clusters) {
+                System.out.println("before="+info);
+                if(info.getSemiClusterId().equals(name)) {
+                    System.err.println("before Error");
+                    System.exit(0);
+                }
+                name = info.getSemiClusterId();
+            }
             bestCandidates = candidates.descendingIterator();
             while(bestCandidates.hasNext()) {
                 SemiClusterInfo msg = bestCandidates.next();
@@ -235,7 +235,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 newCluster.setScore(msg.getScore());
                 System.out.println("add new: " + newCluster +" result="+clusters.add(newCluster));
 //                clusterCandidates.add(newCluster);
-                 clusters.add(newCluster);
+//                 clusters.add(newCluster);
             }
             name = "";
             for(SemiClusterInfo info : clusters) {
