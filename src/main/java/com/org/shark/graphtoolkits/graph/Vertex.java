@@ -26,4 +26,8 @@ public class Vertex implements Comparable<Vertex> {
     public int compareTo(Vertex o) {
         return this.getVid() - o.getVid();
     }
+
+    public String toString() {
+        return "{"+vid+":"+weight+"}";
+    }
 }
