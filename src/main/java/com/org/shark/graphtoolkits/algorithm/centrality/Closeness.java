@@ -38,7 +38,7 @@ public class Closeness implements GenericGraphTool {
             double centrality = computeSingleVertex(vid, vertexIdSets);
             centralitySet.add(new Vertex(vid, centrality));
         }
-
+        System.out.println(centralitySet.size());
         int clusterCountToBeRemoved = 0;
         NavigableSet<Vertex> setSort = new TreeSet<Vertex>(
                 new Comparator<Vertex>() {
@@ -49,6 +49,7 @@ public class Closeness implements GenericGraphTool {
                     }
                 });
         setSort.addAll(centralitySet);
+        System.out.println("set size="+setSort.size());
         clusterCountToBeRemoved = setSort.size() - 10;
         Iterator<Vertex> itr = setSort.descendingIterator();
         System.out.println("Remove size="+clusterCountToBeRemoved);
