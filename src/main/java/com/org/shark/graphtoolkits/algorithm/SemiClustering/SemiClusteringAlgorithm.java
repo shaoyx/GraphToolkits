@@ -169,6 +169,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 ArrayList<SemiClusterInfo> preSemiClusterInfo = nbrSCVertex.getPreCandidateSemiClusters();
 
                 for (SemiClusterInfo msg : preSemiClusterInfo) {
+                    System.out.println("add msg=" + msg);
                     candidates.add(msg);
 
                     if (!msg.contains(vid)
@@ -178,6 +179,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                         msgNew.addVertex(vid);
                         msgNew.setSemiClusterId("C" + createNewSemiClusterName(msgNew.getVertexList()));
                         msgNew.setScore(semiClusterScoreCalcuation(msgNew));
+                        System.out.println("add msgNew=" + msgNew);
                         candidates.add(msgNew);
                         hasUpdated = true;
                     }
