@@ -184,16 +184,16 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 }
             }
 
-//            String preNamce = "";
-//            for(SemiClusterInfo scInfo : candidates) {
-//                System.out.println(scInfo);
-//                if(scInfo.getSemiClusterId().equals(preNamce)) {
-//                    System.err.println("Error");
-//                    System.exit(0);
-//                }
-//                preNamce = scInfo.getSemiClusterId();
-//            }
-//            System.out.println();
+            String preNamce = "";
+            for(SemiClusterInfo scInfo : candidates) {
+                System.out.println(scInfo);
+                if(scInfo.getSemiClusterId().equals(preNamce)) {
+                    System.err.println("out put candidates: Error");
+                    System.exit(0);
+                }
+                preNamce = scInfo.getSemiClusterId();
+            }
+            System.out.println();
 
             Iterator<SemiClusterInfo> bestCandidates = candidates.descendingIterator();
             int count = 0;
