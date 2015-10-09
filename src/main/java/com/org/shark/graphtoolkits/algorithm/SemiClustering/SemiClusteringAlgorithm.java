@@ -317,7 +317,16 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             for(int vid : graphData.getVertexSet().keySet()) {
                 SemiClusterVertex scVertex = semiClusterGraph.getSemiClusterVertex(vid);
                 Set<SemiClusterInfo> scInfos = scVertex.getVertexClusterContainThis();
-                for(SemiClusterInfo scd : scInfos) {
+                NavigableSet<SemiClusterInfo> setSort = new TreeSet<SemiClusterInfo>(
+                        new Comparator<SemiClusterInfo>() {
+                            @Override
+                            public int compare(SemiClusterInfo o1, SemiClusterInfo o2) {
+                                return (o1.getScore() == o2.getScore() ? 0
+                                        : o1.getScore() > o2.getScore() ? -1 : 1);
+                            }
+                        });
+                setSort.addAll(scInfos);
+                for(SemiClusterInfo scd : setSort) {
 
                     StringBuffer sb = new StringBuffer();
                     sb.append(vid);
