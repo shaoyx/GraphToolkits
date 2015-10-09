@@ -124,6 +124,7 @@ public class SemiClusterInfo implements Comparable<SemiClusterInfo> {
 
   @Override
   public boolean equals(Object obj) {
+//      System.out.println("Equal function");
     if (this == obj)
       return true;
     if (obj == null)
@@ -159,6 +160,7 @@ public class SemiClusterInfo implements Comparable<SemiClusterInfo> {
 
   @Override
   public int compareTo(SemiClusterInfo m) {
+//      System.out.println("CompareTo methods.");
       if(this.getSemiClusterId().equals(m.getSemiClusterId()))
           return 0;
     return (this.getScore() == m.getScore() ? 0

@@ -80,10 +80,19 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 //        Set<SemiClusterInfo> sets = new TreeSet<SemiClusterInfo>();
 //        SemiClusterInfo scInfo1 = new SemiClusterInfo();
 //        scInfo1.setSemiClusterId("C1");
+//        scInfo1.setScore(1.0);
 //        System.out.println(sets.add(scInfo1));
-//        SemiClusterInfo scInfo2 = new SemiClusterInfo();
+////        scInfo1.setSemiClusterId("C2");
+//
+//        SemiClusterInfo scInfo2 = scInfo1.copy();
 //        scInfo2.setSemiClusterId("C1");
+//        scInfo2.setScore(2.0);
+//        System.out.println("scInfo2="+scInfo2);
 //        System.out.println(sets.add(scInfo2));
+//
+//        for(SemiClusterInfo info : sets) {
+//            System.out.println(info);
+//        }
 
         computeSemiClusters();
 
@@ -165,7 +174,6 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                     if (!msg.contains(vid)
                             && msg.size() < semiClusterMaximumVertexCount
                             && connectivityValidation(vid, msg.getVertexList())) { //check connectivity
-
                         SemiClusterInfo msgNew = msg.copy();
                         msgNew.addVertex(vid);
                         msgNew.setSemiClusterId("C" + createNewSemiClusterName(msgNew.getVertexList()));
@@ -174,8 +182,18 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                         hasUpdated = true;
                     }
                 }
-
             }
+
+            String preNamce = "";
+            for(SemiClusterInfo scInfo : candidates) {
+                System.out.println(scInfo);
+                if(scInfo.getSemiClusterId().equals(preNamce)) {
+                    System.err.println("Error");
+                    System.exit(0);
+                }
+                preNamce = scInfo.getSemiClusterId();
+            }
+            System.out.println();
 
             Iterator<SemiClusterInfo> bestCandidates = candidates.descendingIterator();
             int count = 0;
