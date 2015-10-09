@@ -29,6 +29,8 @@ public class Closeness implements GenericGraphTool {
 
     public void computeClosenessForVertexSet(HashSet<Integer> vertexIdSets) {
 
+        System.out.println("Size="+vertexIdSets.size());
+
         if(vertexIdSets.size() <= 10) return;
 
         TreeSet<Vertex> centralitySet = new TreeSet<Vertex>();
@@ -129,9 +131,9 @@ public class Closeness implements GenericGraphTool {
                     int sv = Integer.valueOf(values[i]);
                     gList.add(sv);
                 }
-//                System.out.println(vid + " " +gList);
+                System.out.println(vid + " " +gList);
                 this.computeClosenessForVertexSet(gList);
-//                System.out.println(vid + "cleaned: " +gList);
+                System.out.println(vid + "cleaned: " +gList);
 
                 StringBuilder sb = new StringBuilder();
                 sb.append(vid);
