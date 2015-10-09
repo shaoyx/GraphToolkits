@@ -38,7 +38,7 @@ public class SemiClusterInfo implements Comparable<SemiClusterInfo>, Comparator<
 
   public SemiClusterInfo() {
     semiClusterVertexList = new ArrayList<Integer>();
-    semiClusterContainThis = new TreeSet<SemiClusterDetails>();
+    semiClusterContainThis = new HashSet<SemiClusterDetails>();
   }
 
   public double getScore() {

@@ -131,7 +131,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             ArrayList<SemiClusterInfo> scInfoArrayList = new ArrayList<SemiClusterInfo>();
             scInfoArrayList.add(initialClusters);
 
-            Set<SemiClusterInfo> scList = new TreeSet<SemiClusterInfo>();
+            Set<SemiClusterInfo> scList = new HashSet<SemiClusterInfo>();
             SemiClusterInfo initialClusters2 = new SemiClusterInfo();
             initialClusters2.setSemiClusterId(newClusterName);
             initialClusters2.addVertexList(lV);
@@ -290,7 +290,8 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             itr.remove();
             clusterCountToBeRemoved--;
         }
-        return setSort;
+        HashSet<SemiClusterInfo> res = new HashSet<SemiClusterInfo>(setSort);
+        return res;
     }
 
     private boolean connectivityValidation(int vid, List<Integer> candidateCluster) {
