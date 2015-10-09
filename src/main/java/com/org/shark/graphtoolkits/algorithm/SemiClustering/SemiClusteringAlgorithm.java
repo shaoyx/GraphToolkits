@@ -99,7 +99,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
         computeSemiClusters();
 
-        saveResults(gPath + ".clusters");
+        saveResults(gPath + ".clusters"+".fb-"+this.boundaryFactor);
     }
 
     @Override
