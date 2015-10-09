@@ -233,7 +233,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                 newCluster.setScore(msg.getScore());
                 clusters.add(newCluster);
             }
-
+            name = "";
             for(SemiClusterInfo info : clusters) {
                 System.out.println("mid="+info);
                 if(info.getSemiClusterId().equals(name)) {
@@ -244,6 +244,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
             }
 
             clusters = cleanNewClusters(clusters, vertexMaxClusterCount);
+            name = "";
             for(SemiClusterInfo info : clusters) {
                 System.out.println("after="+info);
                 if(info.getSemiClusterId().equals(name)) {
