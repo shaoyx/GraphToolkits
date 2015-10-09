@@ -347,6 +347,8 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
                     fwr.write(sb.toString());
                 }
                 StringBuilder sb2 = new StringBuilder();
+                sb2.append(vid);
+                sb2.append(": ");
                 for(int tid : nbrs) {
                     sb2.append(tid+" ");
                 }
