@@ -231,6 +231,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 //                newCluster.addVertex(vid);
                 newCluster.setSemiClusterId(msg.getSemiClusterId()); //"C" + createNewSemiClusterName(newCluster.getVertexList()));
                 newCluster.setScore(msg.getScore());
+                System.out.println("add new: " + newCluster);
                 clusters.add(newCluster);
             }
             name = "";
