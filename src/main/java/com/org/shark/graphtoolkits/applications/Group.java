@@ -41,6 +41,45 @@ public class Group {
         return memberList;
     }
 
+    public void setMemberList(Set<Integer> memberList) {
+        this.memberList = memberList;
+    }
+
+    public void deleteMember(int vid) {
+        memberList.remove(vid);
+    }
+
+    public int size() {
+        return memberList == null ? 0 : memberList.size();
+    }
+
+    public Group copy() {
+        Group res = new Group();
+        res.setGroupCenterId(this.getGroupCenterId());
+        res.addMemberList(new HashSet<Integer>(this.getMemberList()));
+        return res;
+    }
+
+    public Set<Integer> intersection(Group other) {
+        HashSet<Integer> res = new HashSet<Integer>();
+        Set<Integer> members = other.getMemberList();
+        for(Integer mid : members) {
+            if(this.memberList.contains(mid)) {
+                res.add(mid);
+            }
+        }
+        return res;
+    }
+
+    public int getNext(HashSet<Integer> visited) {
+        if(memberList == null) return -1;
+        for(int vid : memberList) {
+            if(!visited.contains(vid))
+                return vid;
+        }
+        return -1;
+    }
+
     @Override
     public int hashCode() {
         List<String> vertexIDList = new ArrayList<String>();
@@ -54,7 +93,7 @@ public class Group {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(groupCenterId);
+        sb.append(groupCenterId+":");
         for(Integer scd : memberList) {
             sb.append(" ");
             sb.append(scd);
