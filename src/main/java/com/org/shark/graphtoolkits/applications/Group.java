@@ -60,6 +60,11 @@ public class Group {
         return res;
     }
 
+    public void copy(Group other) {
+        this.setGroupCenterId(other.getGroupCenterId());
+        this.setMemberList(new HashSet<Integer>(other.getMemberList()));
+    }
+
     public Set<Integer> intersection(Group other) {
         HashSet<Integer> res = new HashSet<Integer>();
         Set<Integer> members = other.getMemberList();

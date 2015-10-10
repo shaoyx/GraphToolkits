@@ -66,8 +66,6 @@ public class MergeGroups implements GenericGraphTool {
     public void doCompute(String savePath) {
         refinedGroups = new HashMap<String, Group>();
         for(int gid : rawGroups.keySet()) {
-            if(!rawGroups.get(gid).getMemberList().contains(gid))
-                continue;
 
             if(this.isOutputId(gid)) {
                 System.out.println("gid=" + gid+": "+rawGroups.get(gid));
@@ -96,27 +94,48 @@ public class MergeGroups implements GenericGraphTool {
         saveResults(savePath);
     }
 
+    /**
+     * search the maximal clique which contain gid
+     * @param gid
+     * @return
+     */
     public Group refineGroup(int gid) {
-        Group result = rawGroups.get(gid).copy();
-        HashSet<Integer> visited = new HashSet<Integer>();
-        int curId = gid;
-        while(true) {
-            if(visited.contains(curId)) {
-                curId = result.getNext(visited);
-                if(curId == -1) break;
-                continue;
+        Group result = new Group();
+        Group tmp = new Group();
+        Group gidGroup = rawGroups.get(gid);
+        result.addMember(gid);
+        tmp.addMember(gid);
+        for(int vid : gidGroup.getMemberList()) {
+            if(vid != gid) {
+                tmp.addMember(vid);
+                dfs(vid, tmp, result);
+                tmp.deleteMember(vid);
             }
-            visited.add(curId);
-            Group other = rawGroups.get(curId);
-//            if(!other.getMemberList().contains(curId))
-//                continue;
-            Set<Integer> inter = result.intersection(other);
-            if(this.isOutputId(gid)) {
-                System.out.println("Search vid="+curId +" result="+result+" other="+other+" intersection="+inter);
-            }
-            result.setMemberList(inter);
         }
         return result;
+    }
+
+    public void dfs(int vid, Group curClique, Group res) {
+        if(res.size() < curClique.size()) {
+            res.copy(curClique);
+        }
+        Group vidGroup = rawGroups.get(vid);
+        for(int tmpVid : vidGroup.getMemberList()) {
+            if(tmpVid != vid && checkConnectivity(tmpVid, curClique)) {
+                curClique.addMember(tmpVid);
+                dfs(tmpVid, curClique, res);
+                curClique.deleteMember(tmpVid);
+            }
+        }
+    }
+
+    public boolean checkConnectivity(int vid, Group curClique) {
+        Group vidGroup = rawGroups.get(vid);
+        for(int tmpVid : curClique.getMemberList()) {
+            if(!vidGroup.getMemberList().contains(tmpVid))
+                return false;
+        }
+        return true;
     }
 
     public void updateRawGroups(Group newGroup) {
@@ -170,10 +189,12 @@ public class MergeGroups implements GenericGraphTool {
                     int sv = Integer.valueOf(values[i]);
                     gList.add(sv);
                 }
-                Group g = new Group();
-                g.setGroupCenterId(gid);
-                g.addMemberList(gList);
-                rawGroups.put(gid, g);
+                if(gList.contains(gid)) { //gid is not important in the group.
+                    Group g = new Group();
+                    g.setGroupCenterId(gid);
+                    g.addMemberList(gList);
+                    rawGroups.put(gid, g);
+                }
             }
             fbr.close();
         } catch (IOException e) {
