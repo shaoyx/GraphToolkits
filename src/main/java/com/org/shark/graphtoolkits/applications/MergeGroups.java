@@ -25,10 +25,17 @@ public class MergeGroups implements GenericGraphTool {
     HashMap<String, Group> refinedGroups;
 
     ArrayList<Integer> flags;
+    private double threshold;
 
     @Override
     public void run(CommandLine cmd) {
         String rawGroupFile = cmd.getOptionValue("gf");
+        if(cmd.hasOption("th")) {
+            threshold = Double.valueOf(cmd.getOptionValue("th"));
+        }
+        else {
+            threshold = 2;
+        }
         flags = new ArrayList<Integer>();
 
         flags.add(136176934);
@@ -72,7 +79,7 @@ public class MergeGroups implements GenericGraphTool {
                 System.out.println("gid=" + gid+": shrinked="+shrinkedGroup);
             }
 
-            if(shrinkedGroup.size() > 2 && shrinkedGroup.getMemberList().contains(gid)) {
+            if(shrinkedGroup.size() > this.threshold  && shrinkedGroup.getMemberList().contains(gid)) {
                 for(int vid : shrinkedGroup.getMemberList()) {
                     if(this.isOutputId(vid)) {
                         System.out.println("shirinked valid group="+shrinkedGroup);
