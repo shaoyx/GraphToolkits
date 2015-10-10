@@ -1,8 +1,6 @@
 package com.org.shark.graphtoolkits.algorithm.centrality;
 
 import com.org.shark.graphtoolkits.GenericGraphTool;
-import com.org.shark.graphtoolkits.algorithm.SemiClustering.SemiClusterInfo;
-import com.org.shark.graphtoolkits.algorithm.SemiClustering.data.SemiClusterVertex;
 import com.org.shark.graphtoolkits.graph.Edge;
 import com.org.shark.graphtoolkits.graph.Graph;
 import com.org.shark.graphtoolkits.graph.Vertex;
@@ -27,7 +25,7 @@ public class Closeness implements GenericGraphTool {
 
     public Closeness() {}
 
-    public void computeClosenessForVertexSet(HashSet<Integer> vertexIdSets) {
+    public void computeClosenessForVertexSet(int gid, HashSet<Integer> vertexIdSets) {
 
 //        System.out.println("Size="+vertexIdSets.size());
 
@@ -35,7 +33,7 @@ public class Closeness implements GenericGraphTool {
 
         TreeSet<Vertex> centralitySet = new TreeSet<Vertex>();
         for(int vid : vertexIdSets) {
-            double centrality = computeSingleVertex(vid, vertexIdSets);
+            double centrality = computeSingleVertex(gid, vid, vertexIdSets);
             centralitySet.add(new Vertex(vid, centrality));
         }
 //        System.out.println(centralitySet.size());
@@ -68,7 +66,7 @@ public class Closeness implements GenericGraphTool {
 //        System.out.println(vertexIdSets);
     }
 
-    public double computeSingleVertex(int vid, HashSet<Integer> vertexIdSets) {
+    public double computeSingleVertex(int gid, int vid, HashSet<Integer> vertexIdSets) {
         if(vertexIdSets.size() <= 1) return 0.0;
         double result = 0.0;
         Queue<Integer> queue = new LinkedList<Integer>();
@@ -93,7 +91,12 @@ public class Closeness implements GenericGraphTool {
                 if (visited.contains(e.getId()) || !vertexIdSets.contains(e.getId()))
                     continue;
 
-                result += distance + 1;
+                if(distance + 1 > 2 && gid != vid) { //do not increase the penalty for vid.
+                    result += 10000;
+                }
+                else {
+                    result += distance + 1;
+                }
                 visited.add(e.getId());
                 queue.add(e.getId());
                 dist.put(e.getId(), distance + 1);
@@ -134,13 +137,14 @@ public class Closeness implements GenericGraphTool {
                 String[] values = SEPERATOR.split(line);
 
                 String vid = values[0];
+                int gid = Integer.valueOf(values[0].substring(0, values.length - 1));
                 HashSet<Integer> gList = new HashSet<Integer>();
                 for (int i = 1; i < values.length; i++) {
                     int sv = Integer.valueOf(values[i]);
                     gList.add(sv);
                 }
 //                System.out.println(vid + " " +gList);
-                this.computeClosenessForVertexSet(gList);
+                this.computeClosenessForVertexSet(gid, gList);
 //                System.out.println(vid + "cleaned: " +gList);
 
                 StringBuilder sb = new StringBuilder();
