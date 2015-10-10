@@ -26,6 +26,7 @@ public class MergeGroups implements GenericGraphTool {
 
     ArrayList<Integer> flags;
     private double threshold;
+    private boolean isPrune;
 
     @Override
     public void run(CommandLine cmd) {
@@ -36,13 +37,14 @@ public class MergeGroups implements GenericGraphTool {
         else {
             threshold = 2;
         }
+        isPrune = cmd.hasOption("pr");
         flags = new ArrayList<Integer>();
 
-        flags.add(136176934);
-        flags.add(136780720);
-        flags.add(142614968);
-        flags.add(144496930);
-        flags.add(239841293);
+//        flags.add(136176934);
+//        flags.add(136780720);
+//        flags.add(142614968);
+//        flags.add(144496930);
+//        flags.add(239841293);
 
         loadRawGroupFile(rawGroupFile);
 //        System.out.println("Begin computation ...");
@@ -88,7 +90,8 @@ public class MergeGroups implements GenericGraphTool {
                     System.out.println("SUCCESS");
                 }
                 refinedGroups.put(shrinkedGroup.getGroupId(), shrinkedGroup);
-                updateRawGroups(shrinkedGroup);
+                if(isPrune)
+                    updateRawGroups(shrinkedGroup);
             }
         }
         saveResults(savePath);
