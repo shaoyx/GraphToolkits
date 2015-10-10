@@ -157,7 +157,8 @@ public class Closeness implements GenericGraphTool {
 
                 StringBuilder sb = new StringBuilder();
                 sb.append(vid);
-                for(Integer scd : gList) {
+                TreeSet<Integer> res = new TreeSet<Integer>(gList);
+                for(Integer scd : res) {
                     sb.append(" ");
                     sb.append(scd);
                 }
