@@ -33,6 +33,10 @@ public class Group {
         }
     }
 
+    public boolean hasMember(int vid) {
+        return  memberList == null ? false : memberList.contains(vid);
+    }
+
     public void addMember(int vid) {
         memberList.add(vid);
     }

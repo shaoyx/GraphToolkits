@@ -123,7 +123,7 @@ public class MergeGroups implements GenericGraphTool {
         System.out.println("depth="+depth+": "+curClique);
         Group vidGroup = rawGroups.get(vid);
         for(int tmpVid : vidGroup.getMemberList()) {
-            if(tmpVid != vid && checkConnectivity(tmpVid, curClique)) {
+            if(tmpVid != vid && !curClique.hasMember(tmpVid) && checkConnectivity(tmpVid, curClique)) {
                 curClique.addMember(tmpVid);
                 dfs(tmpVid, curClique, res, depth + 1);
                 curClique.deleteMember(tmpVid);
