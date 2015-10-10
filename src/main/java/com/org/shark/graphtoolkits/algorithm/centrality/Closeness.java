@@ -137,7 +137,7 @@ public class Closeness implements GenericGraphTool {
                 String[] values = SEPERATOR.split(line);
 
                 String vid = values[0];
-                int gid = Integer.valueOf(values[0].substring(0, values.length - 1));
+                int gid = Integer.valueOf(values[0].substring(0, values[0].indexOf(":")));
                 HashSet<Integer> gList = new HashSet<Integer>();
                 for (int i = 1; i < values.length; i++) {
                     int sv = Integer.valueOf(values[i]);
