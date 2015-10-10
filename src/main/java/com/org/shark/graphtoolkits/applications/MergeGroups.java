@@ -68,27 +68,9 @@ public class MergeGroups implements GenericGraphTool {
     public void doCompute(String savePath) {
         refinedGroups = new HashMap<String, Group>();
         for(int gid : rawGroups.keySet()) {
-
-            if(this.isOutputId(gid)) {
-                System.out.println("gid=" + gid+": "+rawGroups.get(gid));
-            }
-
             Group shrinkedGroup = refineGroup(gid);
-
-            if(this.isOutputId(gid)) {
-                System.out.println("gid=" + gid+": shrinked="+shrinkedGroup);
-            }
-
             if(shrinkedGroup.size() > this.threshold  && shrinkedGroup.getMemberList().contains(gid)) {
-                for(int vid : shrinkedGroup.getMemberList()) {
-                    if(this.isOutputId(vid)) {
-                        System.out.println("shirinked valid group="+shrinkedGroup);
-                        break;
-                    }
-                }
-                if(this.isOutputId(gid)) {
-                    System.out.println("SUCCESS");
-                }
+                shrinkedGroup.setGroupCenterId(gid);
                 refinedGroups.put(shrinkedGroup.getGroupId(), shrinkedGroup);
                 if(isPrune)
                     updateRawGroups(shrinkedGroup);
@@ -166,9 +148,11 @@ public class MergeGroups implements GenericGraphTool {
                 fwr.write(refinedGroups.get(gid).getGroupId()+": "+refinedGroups.get(gid).toString());
             }
 
-            for(Integer vid : rawGroups.keySet()) {
-                if(rawGroups.get(vid) != null || rawGroups.get(vid).size() > 0) {
-                    fwr.write(rawGroups.get(vid).getGroupId()+": "+rawGroups.get(vid).toString());
+            if(isPrune) {
+                for (Integer vid : rawGroups.keySet()) {
+                    if (rawGroups.get(vid) != null || rawGroups.get(vid).size() > 0) {
+                        fwr.write(rawGroups.get(vid).getGroupId() + ": " + rawGroups.get(vid).toString());
+                    }
                 }
             }
 
@@ -198,12 +182,13 @@ public class MergeGroups implements GenericGraphTool {
                     int sv = Integer.valueOf(values[i]);
                     gList.add(sv);
                 }
-                if(gList.contains(gid)) { //gid is not important in the group.
+                if(!gList.contains(gid)) { //gid is not important in the group.
+                    gList.add(gid);
+                }
                     Group g = new Group();
                     g.setGroupCenterId(gid);
                     g.addMemberList(gList);
                     rawGroups.put(gid, g);
-                }
             }
             fbr.close();
         } catch (IOException e) {
