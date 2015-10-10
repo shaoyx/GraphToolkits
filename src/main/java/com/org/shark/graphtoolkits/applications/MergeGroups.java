@@ -27,7 +27,7 @@ public class MergeGroups implements GenericGraphTool {
     public void run(CommandLine cmd) {
         String rawGroupFile = cmd.getOptionValue("gf");
         loadRawGroupFile(rawGroupFile);
-        System.out.println("Begin computation ...");
+//        System.out.println("Begin computation ...");
         doCompute(rawGroupFile + ".refined");
     }
 
@@ -39,7 +39,7 @@ public class MergeGroups implements GenericGraphTool {
     public void doCompute(String savePath) {
         refinedGroups = new HashMap<String, Group>();
         for(int gid : rawGroups.keySet()) {
-            System.out.println("gid="+gid);
+//            System.out.println("gid="+gid);
             Group shrinkedGroup = refineGroup(gid);
             if(shrinkedGroup.size() > 2) {
                 refinedGroups.put(shrinkedGroup.getGroupId(), shrinkedGroup);
