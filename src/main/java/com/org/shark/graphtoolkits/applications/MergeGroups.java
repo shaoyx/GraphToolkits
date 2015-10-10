@@ -67,7 +67,9 @@ public class MergeGroups implements GenericGraphTool {
                 System.out.println("gid=" + gid+": shrinked="+shrinkedGroup);
             }
             if(shrinkedGroup.size() > 2) {
-                System.out.println("SUCCESS");
+                if(this.isOutputId(gid)) {
+                    System.out.println("SUCCESS");
+                }
                 refinedGroups.put(shrinkedGroup.getGroupId(), shrinkedGroup);
                 updateRawGroups(shrinkedGroup);
             }
