@@ -106,6 +106,8 @@ public class MergeGroups implements GenericGraphTool {
         result.addMember(gid);
         tmp.addMember(gid);
         int depth = 0;
+        if(gidGroup == null || gidGroup.getMemberList() == null)
+            return result;
         for(int vid : gidGroup.getMemberList()) {
             if(vid != gid) {
                 tmp.addMember(vid);
@@ -121,7 +123,7 @@ public class MergeGroups implements GenericGraphTool {
             res.copy(curClique);
         }
         System.out.println("depth="+depth+": "+curClique);
-        Group vidGroup = rawGroups.get(vid);
+        Group vidGroup = rawGroups.get(vid); //must not be empty
         for(int tmpVid : vidGroup.getMemberList()) {
             if(tmpVid != vid && !curClique.hasMember(tmpVid) && checkConnectivity(tmpVid, curClique)) {
                 curClique.addMember(tmpVid);
@@ -133,6 +135,8 @@ public class MergeGroups implements GenericGraphTool {
 
     public boolean checkConnectivity(int vid, Group curClique) {
         Group vidGroup = rawGroups.get(vid);
+        if(vidGroup == null || vidGroup.getMemberList() == null)
+            return false;
         for(int tmpVid : curClique.getMemberList()) {
             if(!vidGroup.getMemberList().contains(tmpVid))
                 return false;
