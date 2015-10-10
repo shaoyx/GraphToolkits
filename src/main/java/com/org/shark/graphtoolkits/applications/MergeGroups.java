@@ -9,6 +9,7 @@ import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
 import org.apache.commons.cli.CommandLine;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,16 +17,26 @@ import java.util.regex.Pattern;
 
 @GraphAnalyticTool(
         name = "MergeGroups",
-        description = "Merge groups for find minimal satifised groups"
+        description = "Merge groups for find minimal satisfied groups"
 )
 public class MergeGroups implements GenericGraphTool {
     protected static final Pattern SEPERATOR =  Pattern.compile("[\t ]");
     HashMap<Integer, Group> rawGroups;
     HashMap<String, Group> refinedGroups;
 
+    ArrayList<Integer> flags;
+
     @Override
     public void run(CommandLine cmd) {
         String rawGroupFile = cmd.getOptionValue("gf");
+        flags = new ArrayList<Integer>();
+
+        flags.add(136176934);
+        flags.add(136780720);
+        flags.add(142614968);
+        flags.add(144496930);
+        flags.add(239841293);
+
         loadRawGroupFile(rawGroupFile);
 //        System.out.println("Begin computation ...");
         doCompute(rawGroupFile + ".refined");
@@ -36,11 +47,25 @@ public class MergeGroups implements GenericGraphTool {
         return cmd.hasOption("gf");
     }
 
+
+    boolean isOutputId(int vid) {
+        for(int i = 0; i < flags.size(); i++) {
+            if(flags.get(i) == vid)
+                return true;
+        }
+        return false;
+    }
+
     public void doCompute(String savePath) {
         refinedGroups = new HashMap<String, Group>();
         for(int gid : rawGroups.keySet()) {
-//            System.out.println("gid="+gid);
+            if(this.isOutputId(gid)) {
+                System.out.println("gid=" + gid+": "+rawGroups.get(gid));
+            }
             Group shrinkedGroup = refineGroup(gid);
+            if(this.isOutputId(gid)) {
+                System.out.println("gid=" + gid+": shrinked="+shrinkedGroup);
+            }
             if(shrinkedGroup.size() > 2) {
                 refinedGroups.put(shrinkedGroup.getGroupId(), shrinkedGroup);
                 updateRawGroups(shrinkedGroup);
@@ -62,6 +87,9 @@ public class MergeGroups implements GenericGraphTool {
             visited.add(curId);
             Group other = rawGroups.get(curId);
             Set<Integer> inter = result.intersection(other);
+            if(this.isOutputId(gid)) {
+                System.out.println("Search vid="+curId +"g1="+result+" other="+other+" intersection="+inter);
+            }
             result.setMemberList(inter);
         }
         return result;
