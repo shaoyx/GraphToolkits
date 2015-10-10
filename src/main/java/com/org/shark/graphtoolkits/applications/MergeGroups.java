@@ -105,25 +105,27 @@ public class MergeGroups implements GenericGraphTool {
         Group gidGroup = rawGroups.get(gid);
         result.addMember(gid);
         tmp.addMember(gid);
+        int depth = 0;
         for(int vid : gidGroup.getMemberList()) {
             if(vid != gid) {
                 tmp.addMember(vid);
-                dfs(vid, tmp, result);
+                dfs(vid, tmp, result, depth);
                 tmp.deleteMember(vid);
             }
         }
         return result;
     }
 
-    public void dfs(int vid, Group curClique, Group res) {
+    public void dfs(int vid, Group curClique, Group res, int depth) {
         if(res.size() < curClique.size()) {
             res.copy(curClique);
         }
+        System.out.println("depth="+depth+": "+curClique);
         Group vidGroup = rawGroups.get(vid);
         for(int tmpVid : vidGroup.getMemberList()) {
             if(tmpVid != vid && checkConnectivity(tmpVid, curClique)) {
                 curClique.addMember(tmpVid);
-                dfs(tmpVid, curClique, res);
+                dfs(tmpVid, curClique, res, depth + 1);
                 curClique.deleteMember(tmpVid);
             }
         }
