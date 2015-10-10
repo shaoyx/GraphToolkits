@@ -67,6 +67,12 @@ public class MergeGroups implements GenericGraphTool {
                 System.out.println("gid=" + gid+": shrinked="+shrinkedGroup);
             }
             if(shrinkedGroup.size() > 2) {
+                for(int vid : shrinkedGroup.getMemberList()) {
+                    if(this.isOutputId(vid)) {
+                        System.out.println("shirinked valid group="+shrinkedGroup);
+                        break;
+                    }
+                }
                 if(this.isOutputId(gid)) {
                     System.out.println("SUCCESS");
                 }
@@ -91,7 +97,7 @@ public class MergeGroups implements GenericGraphTool {
             Group other = rawGroups.get(curId);
             Set<Integer> inter = result.intersection(other);
             if(this.isOutputId(gid)) {
-                System.out.println("Search vid="+curId +" g1="+result+" other="+other+" intersection="+inter);
+                System.out.println("Search vid="+curId +" result="+result+" other="+other+" intersection="+inter);
             }
             result.setMemberList(inter);
         }
