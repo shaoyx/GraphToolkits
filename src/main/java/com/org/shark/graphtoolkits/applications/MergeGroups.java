@@ -125,6 +125,8 @@ public class MergeGroups implements GenericGraphTool {
         for(int tmpVid : curClique.getMemberList()) {
             if(!vidGroup.getMemberList().contains(tmpVid))
                 return false;
+            if(rawGroups.get(tmpVid) == null || !rawGroups.get(tmpVid).hasMember(vid))
+                return  false;
         }
         return true;
     }
