@@ -103,7 +103,12 @@ public class Group {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(groupCenterId+":");
+        List<Integer> list = new ArrayList<Integer>();
         for(Integer scd : memberList) {
+            list.add(scd);
+        }
+        Collections.sort(list);
+        for(Integer scd : list) {
             sb.append(" ");
             sb.append(scd);
         }

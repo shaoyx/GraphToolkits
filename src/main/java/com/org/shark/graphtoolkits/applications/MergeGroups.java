@@ -48,7 +48,42 @@ public class MergeGroups implements GenericGraphTool {
 
         loadRawGroupFile(rawGroupFile);
 //        System.out.println("Begin computation ...");
-        doCompute(rawGroupFile + ".refined");
+        if(cmd.hasOption("mg")) {
+            mergeGlobalGroup(rawGroupFile+".gmerge");
+        }
+        {
+            doCompute(rawGroupFile + ".refined");
+        }
+    }
+
+    public void mergeGlobalGroup(String savePath) {
+        HashSet<Group> result = new HashSet<Group>();
+        for(int gid : rawGroups.keySet()) {
+            doMergeGroup(rawGroups.get(gid), result);
+        }
+        saveResults(savePath);
+    }
+
+    public void doMergeGroup(Group group, HashSet<Group> gSet) {
+        if(gSet.isEmpty()) {
+            gSet.add(group.copy());
+        }
+
+        Group tmpGroup = group.copy();
+        boolean isChanged = true;
+        while(isChanged) {
+            isChanged = false;
+           for(Group g : gSet) {
+               Set<Integer> inter = g.intersection(tmpGroup);
+               if(inter.size() > 2) {
+                  isChanged = true;
+                   tmpGroup.addMemberList(g.getMemberList());
+                   gSet.remove(g);
+                   break;
+               }
+           }
+        }
+        gSet.add(tmpGroup);
     }
 
     @Override
