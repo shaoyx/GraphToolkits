@@ -9,10 +9,7 @@ import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
 import org.apache.commons.cli.CommandLine;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @GraphAnalyticTool(
@@ -53,7 +50,7 @@ public class MergeGroups implements GenericGraphTool {
         }
         else if(cmd.hasOption("mf")) {
             String globalGroupFilePath = cmd.getOptionValue("i");
-            HashMap<Integer, Group> globalGroups = new HashMap<Integer, Group>();
+            HashMap<Integer, List<Group> > globalGroups = new HashMap<Integer, List<Group> >();
             loadGlobalGroupFile(globalGroups, globalGroupFilePath);
             mergeFinalGroup(globalGroups, rawGroupFile+".final");
         }
@@ -63,22 +60,24 @@ public class MergeGroups implements GenericGraphTool {
         }
     }
 
-    public void mergeFinalGroup(HashMap<Integer, Group> globalGroups, String savePath) {
+    public void mergeFinalGroup(HashMap<Integer, List<Group> > globalGroups, String savePath) {
         int count = 0;
-        if(count % 100 == 0)
-            System.out.println("Processing "+ count);
        for(int gid : rawGroups.keySet()) {
            count++;
+           if(count % 100 == 0)
+               System.out.println("Processing "+ count);
            Group rawGroup = rawGroups.get(gid);
            boolean isChanged = false;
            do {
                Set<Integer> maxInterSet = null;
                for (int memberId : rawGroup.getMemberList()) {
-                   Group memberGroup = globalGroups.get(memberId);
+                   List<Group> memberGroup = globalGroups.get(memberId);
                    if (memberGroup == null) continue;
-                   Set<Integer> inter = rawGroup.intersection(memberGroup);
-                   if(maxInterSet == null || maxInterSet.size() < inter.size()) {
-                       maxInterSet = inter;
+                   for(Group gg : memberGroup) {
+                       Set<Integer> inter = rawGroup.intersection(gg);
+                       if (maxInterSet == null || maxInterSet.size() < inter.size()) {
+                           maxInterSet = inter;
+                       }
                    }
                }
                if(maxInterSet != null && maxInterSet.size() > 2) {
@@ -299,7 +298,7 @@ public class MergeGroups implements GenericGraphTool {
         }
     }
 
-    public void loadGlobalGroupFile(HashMap<Integer, Group> globalGroups, String filePath) {
+    public void loadGlobalGroupFile(HashMap<Integer, List<Group>> globalGroups, String filePath) {
         try {
             FileInputStream fin = new FileInputStream(filePath);
             BufferedReader fbr = new BufferedReader(new InputStreamReader(fin));
@@ -319,15 +318,14 @@ public class MergeGroups implements GenericGraphTool {
                     gList.add(sv);
                 }
                 for(int tmpId : gList) {
-                    if(globalGroups.containsKey(tmpId))  {
+                    if(!globalGroups.containsKey(tmpId))  {
+                        globalGroups.put(tmpId, new ArrayList<Group>());
                        System.out.println("Conflict: "+tmpId+" pre="+globalGroups.get(tmpId)+" cur="+gList);
                     }
-                    else {
-                        Group g = new Group();
-                        g.setGroupCenterId(tmpId);
-                        g.addMemberList(gList);
-                        globalGroups.put(tmpId, g);
-                    }
+                    Group g = new Group();
+                    g.setGroupCenterId(tmpId);
+                    g.addMemberList(gList);
+                    globalGroups.get(tmpId).add(g);
                 }
             }
             fbr.close();
