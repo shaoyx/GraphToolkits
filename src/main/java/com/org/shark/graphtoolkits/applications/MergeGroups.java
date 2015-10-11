@@ -72,7 +72,7 @@ public class MergeGroups implements GenericGraphTool {
                for (int memberId : rawGroup.getMemberList()) {
                    Group memberGroup = globalGroups.get(memberId);
                    if (memberGroup == null) continue;
-                   Set<Integer> inter = rawGroup.intersection(globalGroups.get(gid));
+                   Set<Integer> inter = rawGroup.intersection(memberGroup);
                    if(maxInterSet == null || maxInterSet.size() < inter.size()) {
                        maxInterSet = inter;
                    }

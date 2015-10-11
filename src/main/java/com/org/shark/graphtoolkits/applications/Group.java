@@ -72,6 +72,7 @@ public class Group {
     public Set<Integer> intersection(Group other) {
         HashSet<Integer> res = new HashSet<Integer>();
         Set<Integer> members = other.getMemberList();
+        if(members == null || this.memberList == null) return res;
         for(Integer mid : members) {
             if(this.memberList.contains(mid)) {
                 res.add(mid);
