@@ -320,7 +320,7 @@ public class MergeGroups implements GenericGraphTool {
                 for(int tmpId : gList) {
                     if(!globalGroups.containsKey(tmpId))  {
                         globalGroups.put(tmpId, new ArrayList<Group>());
-                       System.out.println("Conflict: "+tmpId+" pre="+globalGroups.get(tmpId)+" cur="+gList);
+//                       System.out.println("Conflict: "+tmpId+" pre="+globalGroups.get(tmpId)+" cur="+gList);
                     }
                     Group g = new Group();
                     g.setGroupCenterId(tmpId);
