@@ -64,7 +64,11 @@ public class MergeGroups implements GenericGraphTool {
     }
 
     public void mergeFinalGroup(HashMap<Integer, Group> globalGroups, String savePath) {
+        int count = 0;
+        if(count % 100 == 0)
+            System.out.println("Processing "+ count);
        for(int gid : rawGroups.keySet()) {
+           count++;
            Group rawGroup = rawGroups.get(gid);
            boolean isChanged = false;
            do {
@@ -320,9 +324,9 @@ public class MergeGroups implements GenericGraphTool {
                     }
                     else {
                         Group g = new Group();
-                        g.setGroupCenterId(gid);
+                        g.setGroupCenterId(tmpId);
                         g.addMemberList(gList);
-                        globalGroups.put(gid, g);
+                        globalGroups.put(tmpId, g);
                     }
                 }
             }
