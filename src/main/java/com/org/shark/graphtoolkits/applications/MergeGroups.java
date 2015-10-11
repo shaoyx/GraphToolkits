@@ -51,9 +51,53 @@ public class MergeGroups implements GenericGraphTool {
         if(cmd.hasOption("mg")) {
             mergeGlobalGroup(rawGroupFile+".gmerge");
         }
+        else if(cmd.hasOption("mf")) {
+            String globalGroupFilePath = cmd.getOptionValue("i");
+            HashMap<Integer, Group> globalGroups = new HashMap<Integer, Group>();
+            loadGlobalGroupFile(globalGroups, globalGroupFilePath);
+            mergeFinalGroup(globalGroups, rawGroupFile+".final");
+        }
         else
         {
             doCompute(rawGroupFile + ".refined");
+        }
+    }
+
+    public void mergeFinalGroup(HashMap<Integer, Group> globalGroups, String savePath) {
+       for(int gid : rawGroups.keySet()) {
+           Group rawGroup = rawGroups.get(gid);
+           boolean isChanged = false;
+           do {
+               Set<Integer> maxInterSet = null;
+               for (int memberId : rawGroup.getMemberList()) {
+                   Group memberGroup = globalGroups.get(memberId);
+                   if (memberGroup == null) continue;
+                   Set<Integer> inter = rawGroup.intersection(globalGroups.get(gid));
+                   if(maxInterSet == null || maxInterSet.size() < inter.size()) {
+                       maxInterSet = inter;
+                   }
+               }
+               if(maxInterSet != null && maxInterSet.size() > 2) {
+                   isChanged = true;
+                   for(int did : maxInterSet) {
+                       rawGroup.deleteMember(did);
+                   }
+               }
+           }while(isChanged);
+       }
+        System.out.println("Saving results......");
+        try {
+            FileOutputStream fout = new FileOutputStream(savePath);
+            BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
+
+            for(int gid : rawGroups.keySet()) {
+                Group gg = rawGroups.get(gid);
+                fwr.write(gg.getGroupId() + ": " + gg.toString());
+            }
+            fwr.flush();
+            fwr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -244,6 +288,43 @@ public class MergeGroups implements GenericGraphTool {
                     g.setGroupCenterId(gid);
                     g.addMemberList(gList);
                     rawGroups.put(gid, g);
+            }
+            fbr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadGlobalGroupFile(HashMap<Integer, Group> globalGroups, String filePath) {
+        try {
+            FileInputStream fin = new FileInputStream(filePath);
+            BufferedReader fbr = new BufferedReader(new InputStreamReader(fin));
+
+            String line;
+
+            while((line = fbr.readLine()) != null) {
+                if (line.startsWith("#")) continue;
+                String[] values = SEPERATOR.split(line);
+
+                String vid = values[0];
+//                System.out.println(values[0]);
+                int gid = Integer.valueOf(values[0].substring(0, values[0].indexOf(":")));
+                HashSet<Integer> gList = new HashSet<Integer>();
+                for (int i = 1; i < values.length; i++) {
+                    int sv = Integer.valueOf(values[i]);
+                    gList.add(sv);
+                }
+                for(int tmpId : gList) {
+                    if(globalGroups.containsKey(tmpId))  {
+                       System.out.println("Conflict: "+tmpId+" pre="+globalGroups.get(tmpId)+" cur="+gList);
+                    }
+                    else {
+                        Group g = new Group();
+                        g.setGroupCenterId(gid);
+                        g.addMemberList(gList);
+                        globalGroups.put(gid, g);
+                    }
+                }
             }
             fbr.close();
         } catch (IOException e) {

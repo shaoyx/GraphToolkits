@@ -32,7 +32,9 @@ public class GraphTools {
 		  OPTIONS.addOption("fb", "boundaryFactor", true, "The factor for boundary edges");
 		  OPTIONS.addOption("gf", "groupFile", true, "The path of group file");
 		  OPTIONS.addOption("pr", "prune", false, "Whether to prune the results");
-		  OPTIONS.addOption("mg", "mergeGlobal", false, "Whether to prune the results");
+
+		  OPTIONS.addOption("mg", "mergeGlobal", false, "Merge global results");
+		  OPTIONS.addOption("mf", "mergeFinalResults", false, "Merge final results");
 	  }
 	
 
