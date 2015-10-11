@@ -61,7 +61,19 @@ public class MergeGroups implements GenericGraphTool {
         for(int gid : rawGroups.keySet()) {
             doMergeGroup(rawGroups.get(gid), result);
         }
-        saveResults(savePath);
+
+        try {
+            FileOutputStream fout = new FileOutputStream(savePath);
+            BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
+
+            for(Group gid : result) {
+                fwr.write(gid.getGroupId()+": "+gid.toString());
+            }
+            fwr.flush();
+            fwr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void doMergeGroup(Group group, HashSet<Group> gSet) {
@@ -213,6 +225,7 @@ public class MergeGroups implements GenericGraphTool {
                 String[] values = SEPERATOR.split(line);
 
                 String vid = values[0];
+//                System.out.println(values[0]);
                 int gid = Integer.valueOf(values[0].substring(0, values[0].indexOf(":")));
                 HashSet<Integer> gList = new HashSet<Integer>();
                 for (int i = 1; i < values.length; i++) {
