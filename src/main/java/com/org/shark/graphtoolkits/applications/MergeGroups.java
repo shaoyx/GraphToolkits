@@ -69,6 +69,7 @@ public class MergeGroups implements GenericGraphTool {
            Group rawGroup = rawGroups.get(gid);
            boolean isChanged = false;
            do {
+               isChanged = false;
                Set<Integer> maxInterSet = null;
                for (int memberId : rawGroup.getMemberList()) {
                    List<Group> memberGroup = globalGroups.get(memberId);
