@@ -51,6 +51,7 @@ public class MergeGroups implements GenericGraphTool {
         if(cmd.hasOption("mg")) {
             mergeGlobalGroup(rawGroupFile+".gmerge");
         }
+        else
         {
             doCompute(rawGroupFile + ".refined");
         }
@@ -58,16 +59,20 @@ public class MergeGroups implements GenericGraphTool {
 
     public void mergeGlobalGroup(String savePath) {
         HashSet<Group> result = new HashSet<Group>();
+        int count = 0;
         for(int gid : rawGroups.keySet()) {
+            count ++;
+            if(count % 100 == 0)
+                System.out.println("Processing "+ count);
             doMergeGroup(rawGroups.get(gid), result);
         }
-
+        System.out.println("Saving results......");
         try {
             FileOutputStream fout = new FileOutputStream(savePath);
             BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
 
             for(Group gid : result) {
-                fwr.write(gid.getGroupId()+": "+gid.toString());
+                fwr.write(gid.getGroupId() + ": " + gid.toString());
             }
             fwr.flush();
             fwr.close();
