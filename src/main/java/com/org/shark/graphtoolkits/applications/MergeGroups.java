@@ -119,9 +119,11 @@ public class MergeGroups implements GenericGraphTool {
             List<Group> gList = globalGroups.get(gid);
             if(gList == null || gList.size() == 0) continue;
             for(Group g : gList) {
-                finalResults.add(g);
+                System.out.println(g);
+                System.out.println(finalResults.add(g));
             }
         }
+        System.exit(0);
         for(int gid : rawGroups.keySet()) {
             Group rawGroup = rawGroups.get(gid);
             if(rawGroup == null) continue;
