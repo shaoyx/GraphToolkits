@@ -35,6 +35,7 @@ public class GraphTools {
 
 		  OPTIONS.addOption("mg", "mergeGlobal", false, "Merge global results");
 		  OPTIONS.addOption("mf", "mergeFinalResults", false, "Merge final results");
+		  OPTIONS.addOption("mf2", "mergeFinalResults", false, "Merge final results");
 	  }
 	
 

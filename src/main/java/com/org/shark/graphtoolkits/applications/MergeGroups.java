@@ -54,6 +54,13 @@ public class MergeGroups implements GenericGraphTool {
             loadGlobalGroupFile(globalGroups, globalGroupFilePath);
             mergeFinalGroup(globalGroups, rawGroupFile+".final");
         }
+        else if(cmd.hasOption("mf2")){
+            String globalGroupFilePath = cmd.getOptionValue("i");
+            HashMap<Integer, List<Group> > globalGroups = new HashMap<Integer, List<Group> >();
+            loadGlobalGroupFile(globalGroups, globalGroupFilePath);
+            mergeFinalGroup2(globalGroups, rawGroupFile + ".final2");
+
+        }
         else
         {
             doCompute(rawGroupFile + ".refined");
@@ -96,6 +103,36 @@ public class MergeGroups implements GenericGraphTool {
 
             for(int gid : rawGroups.keySet()) {
                 Group gg = rawGroups.get(gid);
+                fwr.write(gg.getGroupId() + ": " + gg.toString());
+            }
+            fwr.flush();
+            fwr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mergeFinalGroup2(HashMap<Integer, List<Group> > globalGroups, String savePath) {
+        HashSet<Group> finalResults = new HashSet<Group>();
+
+        for(int gid : globalGroups.keySet()) {
+            List<Group> gList = globalGroups.get(gid);
+            if(gList == null || gList.size() == 0) continue;
+            for(Group g : gList) {
+                finalResults.add(g);
+            }
+        }
+        for(int gid : rawGroups.keySet()) {
+            Group rawGroup = rawGroups.get(gid);
+            if(rawGroup == null) continue;
+            finalResults.add(rawGroup);
+        }
+        System.out.println("Saving results......");
+        try {
+            FileOutputStream fout = new FileOutputStream(savePath);
+            BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
+
+            for(Group gg : finalResults) {
                 fwr.write(gg.getGroupId() + ": " + gg.toString());
             }
             fwr.flush();
