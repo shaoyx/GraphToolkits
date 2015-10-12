@@ -45,7 +45,7 @@ public class MergeGroups implements GenericGraphTool {
 
         loadRawGroupFile(rawGroupFile);
 //        System.out.println("Begin computation ...");
-        if(cmd.hasOption("mg")) {
+        if(cmd.hasOption("mg")) { //merge cliques.
             mergeGlobalGroup(rawGroupFile+".gmerge");
         }
         else if(cmd.hasOption("mf")) {
@@ -179,7 +179,7 @@ public class MergeGroups implements GenericGraphTool {
             isChanged = false;
            for(Group g : gSet) {
                Set<Integer> inter = g.intersection(tmpGroup);
-               if(inter.size() > 2) {
+               if(inter.size() > this.threshold) {
                   isChanged = true;
                    tmpGroup.addMemberList(g.getMemberList());
                    gSet.remove(g);
