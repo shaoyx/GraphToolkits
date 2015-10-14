@@ -7,6 +7,7 @@ package com.org.shark.graphtoolkits.applications;
 import com.org.shark.graphtoolkits.GenericGraphTool;
 import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
 
 import java.io.*;
 import java.util.*;
@@ -24,6 +25,32 @@ public class MergeGroups implements GenericGraphTool {
     ArrayList<Integer> flags;
     private double threshold;
     private boolean isPrune;
+
+    public HashMap<Integer, Group> findMaximalGroups(HashMap<Integer, Group> clusters, String savePath) {
+        this.rawGroups = clusters;
+        doCompute(savePath);
+        HashMap<Integer, Group> results = new HashMap<Integer, Group>();
+        for(String gid : refinedGroups.keySet()) {
+            results.put(refinedGroups.get(gid).getGroupCenterId(), refinedGroups.get(gid));
+        }
+        return results;
+    }
+
+    public HashSet<Group> mergeGroupsByCommonNodes(HashMap<Integer, Group> clusters, double nodeThreashold, String savePath) {
+        this.rawGroups = clusters;
+        this.threshold = nodeThreashold;
+        return mergeGlobalGroup(savePath);
+    }
+
+    @Override
+    public void registerOptions(Options options) {
+        options.addOption("th", "threshold", true, "Threshold for edge weight");
+        options.addOption("gf", "groupFile", true, "The path of group file");
+        options.addOption("pr", "prune", false, "Whether to prune the results");
+        options.addOption("mg", "mergeGlobal", false, "Merge global results");
+        options.addOption("mf", "mergeFinalResults", false, "Merge final results");
+        options.addOption("mf2", "mergeFinalResults", false, "Merge final results");
+    }
 
     @Override
     public void run(CommandLine cmd) {
@@ -67,7 +94,7 @@ public class MergeGroups implements GenericGraphTool {
         }
     }
 
-    public void mergeFinalGroup(HashMap<Integer, List<Group> > globalGroups, String savePath) {
+    public HashSet<Group> mergeFinalGroup(HashMap<Integer, List<Group> > globalGroups, String savePath) {
         int count = 0;
        for(int gid : rawGroups.keySet()) {
            count++;
@@ -110,6 +137,7 @@ public class MergeGroups implements GenericGraphTool {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public void mergeFinalGroup2(HashMap<Integer, List<Group> > globalGroups, String savePath) {
@@ -144,7 +172,7 @@ public class MergeGroups implements GenericGraphTool {
         }
     }
 
-    public void mergeGlobalGroup(String savePath) {
+    public HashSet<Group> mergeGlobalGroup(String savePath) {
         HashSet<Group> result = new HashSet<Group>();
         int count = 0;
         for(int gid : rawGroups.keySet()) {
@@ -166,6 +194,7 @@ public class MergeGroups implements GenericGraphTool {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return result;
     }
 
     public void doMergeGroup(Group group, HashSet<Group> gSet) {

@@ -12,13 +12,13 @@ import org.apache.commons.cli.CommandLine;
 
 import com.org.shark.graphtoolkits.GenericGraphTool;
 import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
+import org.apache.commons.cli.Options;
 
 @GraphAnalyticTool(
 		name = "Degree Counter",
 		description = "Counting the Degree. format: (#vid degrees bigD smallD equalD bigL smallL)"
 )
-public class DegreeCounter 
-implements GenericGraphTool{
+public class DegreeCounter implements GenericGraphTool{
 
 	protected static final Pattern SEPERATOR =  Pattern.compile("[\t ]");
 	
@@ -83,6 +83,11 @@ implements GenericGraphTool{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void registerOptions(Options options) {
+
 	}
 
 	@Override

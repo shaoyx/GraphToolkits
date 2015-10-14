@@ -7,6 +7,7 @@ import com.org.shark.graphtoolkits.graph.Vertex;
 import org.apache.commons.cli.CommandLine;
 
 import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
+import org.apache.commons.cli.Options;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -26,6 +27,12 @@ public class ComponentStatistics implements GenericGraphTool {
     private Graph graphData;
     private double threshold;
     private int startVertex;
+
+    @Override
+    public void registerOptions(Options options) {
+        //two-hop algorithm
+        options.addOption("sv", "startVertex", true, "The start vertex for 2-hop search");
+    }
 
     public void run(CommandLine cmd) {
         if(cmd.hasOption("th")) {

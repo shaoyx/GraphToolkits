@@ -2,11 +2,7 @@ package com.org.shark.graphtoolkits;
 
 import java.util.List;
 
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
 
 import com.org.shark.graphtoolkits.utils.AnnotationUtils;
 import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
@@ -16,39 +12,32 @@ public class GraphTools {
 	private static Options OPTIONS;
 	  static {
 		  OPTIONS = new Options();
+		  //general option
 		  OPTIONS.addOption("h", "help", false, "Help");
 		  OPTIONS.addOption("lt", "listTools", false, "List supported tools");
 		  OPTIONS.addOption("tc", "toolClass", true, "Specify the tool class");
 		  OPTIONS.addOption("i", "input", true, "Path of the input graph");
+          OPTIONS.addOption("op", "outputPath", true, "The path of output files");
 
-		  OPTIONS.addOption("th", "threshold", true, "Threshold for edge weight");
-		  OPTIONS.addOption("op", "outputPath", true, "The path of output files");
-		  OPTIONS.addOption("sv", "startVertex", true, "The start vertex for 2-hop search");
+          //semi-clustering option
 
-		  OPTIONS.addOption("iter", "iteration", true, "The limitation of iteration");
-		  OPTIONS.addOption("cSize", "clusterSize", true, "The limitation of the number of cluster size");
-		  OPTIONS.addOption("vcSize", "vertexClusterSize", true, "The limitation of the number of vertices in a cluster");
-		  OPTIONS.addOption("vccSize", "vertexClusterCandidateSize", true, "The limitation of the number of candidate clusters");
-		  OPTIONS.addOption("fb", "boundaryFactor", true, "The factor for boundary edges");
-		  OPTIONS.addOption("gf", "groupFile", true, "The path of group file");
-		  OPTIONS.addOption("pr", "prune", false, "Whether to prune the results");
-
-		  OPTIONS.addOption("mg", "mergeGlobal", false, "Merge global results");
-		  OPTIONS.addOption("mf", "mergeFinalResults", false, "Merge final results");
-		  OPTIONS.addOption("mf2", "mergeFinalResults", false, "Merge final results");
 	  }
 	
 
-	private static void run(CommandLine cmd) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+	private static void run(String [] args, CommandLine cmd) throws InstantiationException, IllegalAccessException, ClassNotFoundException, ParseException {
 		if(!cmd.hasOption("tc") || !cmd.hasOption("i")){
 			printHelp();
 			return;
 		}
-		
+
 		String className = cmd.getOptionValue("tc");
 		GenericGraphTool graphTool = (GenericGraphTool) Class.forName(className).newInstance();
-		
-		if(!graphTool.verifyParameters(cmd)){
+
+        graphTool.registerOptions(OPTIONS);
+
+        cmd = new BasicParser().parse(OPTIONS, args);
+
+        if(!graphTool.verifyParameters(cmd)){
 			printHelp();
 			return;
 		}
@@ -60,7 +49,6 @@ public class GraphTools {
 	private static void printHelp() {
 	    HelpFormatter formatter = new HelpFormatter();
 	    formatter.printHelp(GraphTools.class.getName(), OPTIONS, true);
-		
 	}
 
 	private static void listTools() { 
@@ -83,7 +71,7 @@ public class GraphTools {
 		
 		/* 1. parse the args */
 	    CommandLineParser parser = new BasicParser();
-		CommandLine cmd = parser.parse(OPTIONS, args);
+		CommandLine cmd = parser.parse(OPTIONS, args, true);
 		
 		if(cmd.hasOption("h")){
 			printHelp();
@@ -96,6 +84,6 @@ public class GraphTools {
 		}
 
 		/* 2. run the proper tool */
-		run(cmd);
+		run(args, cmd);
 	}
 }

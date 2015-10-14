@@ -1,11 +1,13 @@
 package com.org.shark.graphtoolkits.algorithm.centrality;
 
 import com.org.shark.graphtoolkits.GenericGraphTool;
+import com.org.shark.graphtoolkits.applications.Group;
 import com.org.shark.graphtoolkits.graph.Edge;
 import com.org.shark.graphtoolkits.graph.Graph;
 import com.org.shark.graphtoolkits.graph.Vertex;
 import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
 
 import java.io.*;
 import java.util.*;
@@ -22,8 +24,49 @@ public class Closeness implements GenericGraphTool {
     protected static final Pattern SEPERATOR =  Pattern.compile("[\t ]");
 
     private Graph graphData;
+    HashMap<Integer, Group> clusters;
 
     public Closeness() {}
+
+    public HashMap<Integer, Group> cleanClusters(Graph graph, HashMap<Integer, Group> clusters, String savePath) {
+        this.graphData = graph;
+        this.clusters = clusters;
+
+        for (int gid : clusters.keySet()) {
+            Group groupByGid = clusters.get(gid);
+            if (groupByGid == null || groupByGid.getMemberList() == null) continue;
+            HashSet<Integer> gList = new HashSet<Integer>(groupByGid.getMemberList());
+            this.computeClosenessForVertexSet(gid, gList);
+            groupByGid.setMemberList(gList);
+        }
+
+        return saveCleanedClusters(savePath);
+    }
+
+    public HashMap<Integer, Group> saveCleanedClusters(String savePath) {
+        try {
+            FileOutputStream fout = new FileOutputStream(savePath);
+            BufferedWriter fwr = new BufferedWriter(new OutputStreamWriter(fout));
+            for(int gid : clusters.keySet()) {
+                Group groupByGid = clusters.get(gid);
+                if(groupByGid == null || groupByGid.getMemberList() == null) continue;
+                StringBuilder sb = new StringBuilder();
+                sb.append(gid);
+                TreeSet<Integer> res = new TreeSet<Integer>(groupByGid.getMemberList());
+                for(Integer scd : res) {
+                    sb.append(" ");
+                    sb.append(scd);
+                }
+                sb.append("\n");
+                fwr.write(sb.toString());
+            }
+            fwr.flush();
+            fwr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return this.clusters;
+    }
 
     public void computeClosenessForVertexSet(int gid, HashSet<Integer> vertexIdSets) {
 
@@ -37,9 +80,9 @@ public class Closeness implements GenericGraphTool {
             centralitySet.add(new Vertex(vid, centrality));
         }
 //        System.out.println(centralitySet.size());
-        if(gid == 180015927) {
-            System.out.println("original set size="+centralitySet.size() + ": "+centralitySet);
-        }
+//        if(gid == 180015927) {
+//            System.out.println("original set size="+centralitySet.size() + ": "+centralitySet);
+//        }
         int clusterCountToBeRemoved = 0;
         NavigableSet<Vertex> setSort = new TreeSet<Vertex>(
                 new Comparator<Vertex>() {
@@ -62,16 +105,16 @@ public class Closeness implements GenericGraphTool {
 //        System.out.println("Remove size="+clusterCountToBeRemoved);
         while (clusterCountToBeRemoved > 0) {
             Vertex removedV = itr.next();
-            if(gid == 180015927) {
-                System.out.println("remove "+removedV.getVid()+" "+vertexIdSets.remove(removedV.getVid()));
-            }
+//            if(gid == 180015927) {
+//                System.out.println("remove "+removedV.getVid()+" "+vertexIdSets.remove(removedV.getVid()));
+//            }
             vertexIdSets.remove(removedV.getVid());
             itr.remove();
             clusterCountToBeRemoved--;
         }
-        if(gid == 180015927) {
-            System.out.println(vertexIdSets);
-        }
+//        if(gid == 180015927) {
+//            System.out.println(vertexIdSets);
+//        }
     }
 
     public double computeSingleVertex(int gid, int vid, HashSet<Integer> vertexIdSets) {
@@ -112,6 +155,12 @@ public class Closeness implements GenericGraphTool {
         }
 //        System.out.println(vid+": score="+result);
         return result / (vertexIdSets.size()  - 1);
+    }
+
+    @Override
+    public void registerOptions(Options options) {
+        options.addOption("th", "threshold", true, "Threshold for edge weight");
+        options.addOption("gf", "groupFile", true, "The path of group file");
     }
 
     @Override

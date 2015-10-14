@@ -5,6 +5,7 @@ import com.org.shark.graphtoolkits.graph.Edge;
 import com.org.shark.graphtoolkits.graph.Vertex;
 import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -26,6 +27,11 @@ public class GraphTransform implements GenericGraphTool {
     HashMap<Integer, HashMap<Integer, Integer>> edgeWeights;
 
     public GraphTransform() {
+
+    }
+
+    @Override
+    public void registerOptions(Options options) {
 
     }
 

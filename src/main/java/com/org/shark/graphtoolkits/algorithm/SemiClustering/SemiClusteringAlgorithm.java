@@ -3,11 +3,13 @@ package com.org.shark.graphtoolkits.algorithm.SemiClustering;
 import com.org.shark.graphtoolkits.GenericGraphTool;
 import com.org.shark.graphtoolkits.algorithm.SemiClustering.data.SemiClusterGraph;
 import com.org.shark.graphtoolkits.algorithm.SemiClustering.data.SemiClusterVertex;
+import com.org.shark.graphtoolkits.applications.Group;
 import com.org.shark.graphtoolkits.graph.Edge;
 import com.org.shark.graphtoolkits.graph.Graph;
 import com.org.shark.graphtoolkits.graph.Vertex;
 import com.org.shark.graphtoolkits.utils.GraphAnalyticTool;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -33,7 +35,39 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
     private SemiClusterGraph semiClusterGraph;
 
+    private Graph mergedGraph;
+
     public SemiClusteringAlgorithm() {}
+
+    public void setSemiClusterMaximumVertexCount(int value) { this.semiClusterMaximumVertexCount = value; }
+    public void setVertexMaxClusterCount(int value) { this.vertexMaxClusterCount = value; }
+    public void setVertexMaxCandidateClusterCount(int value) { this.vertexMaxCandidateClusterCount = value; }
+    public void setIterationLimitation(int value) { this.iterationLimitation = value; }
+    public void setBoundaryFactor(double value) { this.boundaryFactor = value; }
+
+    public HashMap<Integer, Group> run(Graph graph, String savePath) {
+        this.graphData = graph;
+        System.out.println("SemiClustering Configure: \n\titer="+this.iterationLimitation+
+                "\n\tcSize="+this.semiClusterMaximumVertexCount +
+                "\n\tvcSize="+this.vertexMaxClusterCount+
+                "\n\tvccSize="+this.vertexMaxCandidateClusterCount+
+                "\n\tboundaryFactor="+this.boundaryFactor);
+
+        computeSemiClusters();
+
+        HashMap<Integer, Group> clusters = saveResults(savePath);
+        return clusters;
+    }
+
+    @Override
+    public void registerOptions(Options options) {
+        options.addOption("th", "threshold", true, "Threshold for edge weight");
+        options.addOption("iter", "iteration", true, "The limitation of iteration");
+        options.addOption("cSize", "clusterSize", true, "The limitation of the number of cluster size");
+        options.addOption("vcSize", "vertexClusterSize", true, "The limitation of the number of vertices in a cluster");
+        options.addOption("vccSize", "vertexClusterCandidateSize", true, "The limitation of the number of candidate clusters");
+        options.addOption("fb", "boundaryFactor", true, "The factor for boundary edges");
+    }
 
     @Override
     public void run(CommandLine cmd) {
@@ -310,7 +344,8 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
         return false;
     }
 
-    public void saveResults(String savePath) {
+    public HashMap<Integer, Group> saveResults(String savePath) {
+        HashMap<Integer, Group> res = new HashMap<Integer, Group>();
         try{
             FileOutputStream fout = new FileOutputStream(savePath);
             FileOutputStream fout2 = new FileOutputStream(savePath+".merge");
@@ -346,14 +381,19 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
 
                     fwr.write(sb.toString());
                 }
+                HashSet<Integer> gList = new HashSet<Integer>();
                 StringBuilder sb2 = new StringBuilder();
                 sb2.append(vid);
                 sb2.append(": ");
                 for(int tid : nbrs) {
                     sb2.append(tid+" ");
+                    gList.add(tid);
                 }
                 sb2.append("\n");
                 fwr2.write(sb2.toString());
+                Group gg = new Group();
+                gg.setMemberList(gList);
+                res.put(vid, gg);
             }
             fwr.flush();
             fwr.close();
@@ -362,6 +402,7 @@ public class SemiClusteringAlgorithm implements GenericGraphTool {
         }catch (Exception e){
             e.printStackTrace();
         }
+        return res;
     }
 
     /**
